@@ -1,0 +1,16 @@
+{
+  "name": "foodiehub-root",
+  "version": "1.0.0",
+  "description": "FoodieHub Full-Stack Application",
+  "scripts": {
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install:server": "npm install --prefix server",
+    "install:client": "npm install --prefix client",
+    "install:all": "npm install && npm run install:server && npm run install:client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
