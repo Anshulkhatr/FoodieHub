@@ -8,7 +8,9 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "install:server": "npm install --prefix server",
     "install:client": "npm install --prefix client",
-    "install:all": "npm install && npm run install:server && npm run install:client"
+    "install:all": "npm install && npm run install:server && npm run install:client",
+    "build": "npm run install:all && npm run build --prefix client",
+    "start": "node server/server.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
