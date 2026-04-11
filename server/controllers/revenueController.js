@@ -20,6 +20,10 @@ const getRevenueStats = async (req, res) => {
       startDate = new Date(now.getFullYear(), 0, 1); // Start of current year
       format = '%b'; // Jan, Feb...
       groupType = 'month';
+    } else if (period === 'all') {
+      startDate = new Date(0); // Beginning of time
+      format = '%Y'; // Years
+      groupType = 'year';
     }
 
     const matchStage = {

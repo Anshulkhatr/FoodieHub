@@ -32,6 +32,9 @@ const Navbar = ({ toggleCart }) => {
                 Admin Panel
               </Link>
             )}
+            <Link to="/menu" className="text-text-muted hover:text-primary font-medium transition-colors">
+              Menu
+            </Link>
             <Link to="/orders/mine" className="text-text-muted hover:text-primary font-medium transition-colors">
               My Orders
             </Link>

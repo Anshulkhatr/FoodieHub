@@ -13,8 +13,9 @@ import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminMenuPage from './pages/AdminMenuPage';
 import AdminRevenuePage from './pages/AdminRevenuePage';
 import MyOrdersPage from './pages/MyOrdersPage';
+import LandingPage from './pages/LandingPage';
 
-const HomePage = () => {
+const MenuPage = () => {
   const [menu, setMenu] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -37,7 +38,7 @@ const HomePage = () => {
   return (
     <div className="py-6">
       <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-heading font-bold text-text-primary mb-4">Discover Deliciousness</h1>
+        <h1 className="text-4xl md:text-5xl font-heading font-bold text-text-primary mb-4">Our Menu</h1>
         <p className="text-text-muted text-lg max-w-2xl mx-auto">Explore our culinary masterworks made with passion and fresh ingredients.</p>
       </div>
       {menu.length === 0 ? (
@@ -73,17 +74,18 @@ function App() {
     <Router>
       <div className="min-h-screen bg-background text-text-primary font-sans flex flex-col relative overflow-hidden">
         <Navbar toggleCart={() => setIsCartOpen(true)} />
-        <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 relative z-10 w-full overflow-y-auto">
+        <main className="flex-1 w-full relative z-10 overflow-y-auto">
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/orders/mine" element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>} />
-            <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/orders" element={<ProtectedRoute adminOnly><AdminOrdersPage /></ProtectedRoute>} />
-            <Route path="/admin/revenue" element={<ProtectedRoute adminOnly><AdminRevenuePage /></ProtectedRoute>} />
-            <Route path="/admin/menu" element={<ProtectedRoute adminOnly><AdminMenuPage /></ProtectedRoute>} />
-            <Route path="*" element={<NotFoundPage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/menu" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><MenuPage /></div>} />
+            <Route path="/login" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><LoginPage /></div>} />
+            <Route path="/register" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><RegisterPage /></div>} />
+            <Route path="/orders/mine" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute><MyOrdersPage /></ProtectedRoute></div>} />
+            <Route path="/admin/dashboard" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute></div>} />
+            <Route path="/admin/orders" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminOrdersPage /></ProtectedRoute></div>} />
+            <Route path="/admin/revenue" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminRevenuePage /></ProtectedRoute></div>} />
+            <Route path="/admin/menu" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminMenuPage /></ProtectedRoute></div>} />
+            <Route path="*" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><NotFoundPage /></div>} />
           </Routes>
         </main>
         <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />

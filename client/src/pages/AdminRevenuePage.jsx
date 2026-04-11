@@ -10,7 +10,7 @@ const AdminRevenuePage = () => {
     const { user } = useSelector(state => state.auth);
     const navigate = useNavigate();
     const [stats, setStats] = useState({ totalRevenue: 0, totalOrders: 0, avgOrderValue: 0, breakdown: [] });
-    const [period, setPeriod] = useState('weekly');
+    const [period, setPeriod] = useState('all');
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -55,7 +55,7 @@ const AdminRevenuePage = () => {
                 </div>
                 
                 <div className="flex bg-surface p-1 rounded-xl border border-border">
-                    {['weekly', 'monthly', 'yearly'].map((p) => (
+                    {['all', 'weekly', 'monthly', 'yearly'].map((p) => (
                         <button
                             key={p}
                             onClick={() => setPeriod(p)}
@@ -65,7 +65,7 @@ const AdminRevenuePage = () => {
                                 : 'text-text-muted hover:text-text-primary'
                             }`}
                         >
-                            {p.charAt(0).toUpperCase() + p.slice(1)}
+                            {p === 'all' ? 'All Time' : p.charAt(0).toUpperCase() + p.slice(1)}
                         </button>
                     ))}
                 </div>
@@ -100,7 +100,7 @@ const AdminRevenuePage = () => {
                         <h3 className="text-xl font-bold font-heading">Revenue Breakdown</h3>
                     </div>
                     <p className="text-sm text-text-muted bg-background px-3 py-1 rounded-full border border-border">
-                        {period === 'weekly' ? 'Last 7 Days' : period === 'monthly' ? 'Last 30 Days' : 'Monthly (Current Year)'}
+                        {period === 'all' ? 'All Time Performance' : period === 'weekly' ? 'Last 7 Days' : period === 'monthly' ? 'Last 30 Days' : 'Monthly (Current Year)'}
                     </p>
                 </div>
 

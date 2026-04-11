@@ -19,7 +19,7 @@ const AdminDashboard = () => {
 
     const fetchStats = async () => {
       try {
-        const { data } = await axiosInstance.get('/admin/revenue');
+        const { data } = await axiosInstance.get('/admin/revenue?period=all');
         setRevenue(data.totalRevenue || 0);
         setOrderCount(data.totalOrders || 0);
       } catch (error) {
@@ -40,11 +40,12 @@ const AdminDashboard = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Link to="/admin/revenue" className="bg-surface p-6 rounded-xl border border-border shadow-sm flex flex-col items-center justify-center h-40 hover:border-primary transition-all group relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">VIEW DETAILS</span>
+          <div className="absolute top-0 right-0 p-2">
+            <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ANALYTICS</span>
           </div>
-          <h3 className="text-lg text-text-muted mb-2">Total Revenue</h3>
+          <h3 className="text-lg text-text-muted mb-2">Total Revenue (All Time)</h3>
           <p className="text-4xl font-heading font-bold text-success">₹{revenue.toFixed(2)}</p>
+          <p className="text-[10px] text-text-muted mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Click to view detailed reports</p>
         </Link>
         <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex flex-col items-center justify-center h-40">
           <h3 className="text-lg text-text-muted mb-2">Delivered Orders</h3>
