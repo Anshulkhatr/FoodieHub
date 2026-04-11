@@ -23,6 +23,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/menu', require('./routes/menuRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/admin/revenue', require('./routes/revenueRoutes'));
+app.use('/api/admin/ai', require('./routes/aiRoutes'));
 
 // Serve Frontend for Production Deployment
 const buildPath = path.join(__dirname, '../client/dist');

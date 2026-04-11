@@ -53,10 +53,10 @@ const AdminOrdersPage = () => {
           <tbody className="divide-y divide-border">
             {orders.map(order => (
               <tr key={order._id} className="hover:bg-background/50 transition-colors">
-                <td className="px-6 py-4 font-mono text-text-muted text-xs">{order._id.substring(order._id.length - 6).toUpperCase()}</td>
+                <td className="px-6 py-4 font-mono text-text-muted text-xs">{order._id ? order._id.toString().substring(order._id.toString().length - 6).toUpperCase() : 'UNKNOWN'}</td>
                 <td className="px-6 py-4 font-medium">{order.user?.name || 'Guest'}</td>
-                <td className="px-6 py-4 font-bold text-primary">${order.totalPrice.toFixed(2)}</td>
-                <td className="px-6 py-4 text-text-muted">{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td className="px-6 py-4 font-bold text-primary">${(order.totalPrice || 0).toFixed(2)}</td>
+                <td className="px-6 py-4 text-text-muted">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown Date'}</td>
                 <td className="px-6 py-4 flex items-center gap-3">
                   <div className="w-24">
                     <Badge status={order.status} />

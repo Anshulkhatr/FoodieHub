@@ -10,6 +10,6 @@ router.route('/')
 
 router.route('/mine').get(protect, getMyOrders);
 
-router.route('/:id/status').put(protect, admin, updateStatus);
+router.route('/:id/status').put(protect, updateStatus);
 
 module.exports = router;

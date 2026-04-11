@@ -3,7 +3,7 @@ import axiosInstance from '../utils/axiosInstance';
 import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
-import { Plus, Edit2, Trash2, Camera, FileText } from 'lucide-react';
+import { Plus, Edit2, Trash2, Camera, FileText, Sparkles } from 'lucide-react';
 
 const AdminMenuPage = () => {
   const [menu, setMenu] = useState([]);
@@ -22,9 +22,30 @@ const AdminMenuPage = () => {
     isAvailable: true
   });
 
+  const [isGenerating, setIsGenerating] = useState(false);
+
   useEffect(() => {
     fetchMenu();
   }, []);
+
+  const handleGenerateDescription = async () => {
+    const { name, category } = formData;
+    if (!name || !category) {
+      alert('Please enter both name and category first to generate a description.');
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const { data } = await axiosInstance.post('/admin/ai/generate', { name, category });
+      setFormData(prev => ({ ...prev, desc: data.description }));
+    } catch (error) {
+      console.error('Failed to generate description:', error);
+      alert('Failed to generate description. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const fetchMenu = async () => {
     try {
@@ -138,7 +159,7 @@ const AdminMenuPage = () => {
               <tr key={item._id} className="hover:bg-background/50 transition-colors">
                 <td className="px-6 py-4 font-medium">{item.name}</td>
                 <td className="px-6 py-4 text-text-muted">{item.category}</td>
-                <td className="px-6 py-4 font-bold text-primary">${item.price.toFixed(2)}</td>
+                <td className="px-6 py-4 font-bold text-primary">${(item.price || 0).toFixed(2)}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 text-xs font-bold rounded-md ${item.isAvailable ? 'bg-success/10 text-success' : 'bg-red-500/10 text-red-500'}`}>
                     {item.isAvailable ? 'Active' : 'Hidden'}
@@ -212,7 +233,27 @@ const AdminMenuPage = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">Description</label>
+            <div className="flex justify-between items-center mb-1">
+              <label className="block text-sm font-semibold">Description</label>
+              <button 
+                type="button"
+                onClick={handleGenerateDescription}
+                disabled={isGenerating}
+                className="text-xs flex items-center gap-1.5 px-2 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase font-bold tracking-wider"
+              >
+                {isGenerating ? (
+                  <>
+                    <div className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={14} />
+                    Generate with AI
+                  </>
+                )}
+              </button>
+            </div>
             <textarea 
               name="desc"
               required

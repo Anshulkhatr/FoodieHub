@@ -7,10 +7,14 @@ const Button = ({ children, variant = 'primary', className = '', ...props }) => 
     outline: 'border-2 border-primary text-primary hover:bg-primary hover:text-white',
     ghost: 'text-text-muted hover:text-primary hover:bg-surface',
     danger: 'bg-red-500 text-white hover:bg-red-600',
+    secondary: 'bg-surface text-text-primary border border-border hover:bg-secondary/5',
   };
 
+  // Prevent passing non-standard props to DOM button
+  const { isLoading: _, ...restProps } = props;
+
   return (
-    <button className={`${baseStyle} ${variants[variant]} ${className}`} {...props}>
+    <button className={`${baseStyle} ${variants[variant]} ${className}`} {...restProps}>
       {children}
     </button>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const StatusDropdown = ({ currentStatus, onStatusChange, isLoading }) => {
-  const statuses = ['Pending', 'Preparing', 'Ready', 'Delivered'];
+  const statuses = ['Pending', 'Preparing', 'Ready', 'Out for Delivery', 'Delivered'];
 
   return (
     <select

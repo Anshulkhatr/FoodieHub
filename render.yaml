@@ -13,3 +13,7 @@ services:
         value: mongodb+srv://admin:adminn@cluster0.dnellwt.mongodb.net/foodiehub-db?appName=Cluster0
       - key: JWT_SECRET
         value: supersecretfoodiehubkey
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: NVIDIA_BASE_URL
+        value: https://integrate.api.nvidia.com/v1
