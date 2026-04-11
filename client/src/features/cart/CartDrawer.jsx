@@ -78,7 +78,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                       <Trash2 size={16} />
                     </button>
                   </div>
-                  <div className="text-primary font-bold mt-1">${item.price.toFixed(2)}</div>
+                  <div className="text-primary font-bold mt-1">₹{item.price.toFixed(2)}</div>
                   <div className="flex items-center mt-auto pt-2">
                     <div className="flex items-center bg-background border border-border rounded-lg overflow-hidden">
                       <button 
@@ -106,7 +106,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
           <div className="p-4 border-t border-border bg-surface shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
             <div className="flex justify-between items-center mb-4 text-lg">
               <span className="font-medium text-text-muted">Total</span>
-              <span className="font-heading font-bold text-primary text-xl">${total.toFixed(2)}</span>
+              <span className="font-heading font-bold text-primary text-xl">₹{total.toFixed(2)}</span>
             </div>
             <Button 
               className="w-full h-12 text-lg shadow-md" 

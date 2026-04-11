@@ -40,7 +40,7 @@ const MenuItemCard = ({ item }) => {
           />
         )}
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg shadow-sm z-10">
-          <span className="font-heading font-bold text-primary">${(item.price || 0).toFixed(2)}</span>
+          <span className="font-heading font-bold text-primary">₹{(item.price || 0).toFixed(2)}</span>
         </div>
       </div>
       <div className="p-4 flex flex-col flex-grow">

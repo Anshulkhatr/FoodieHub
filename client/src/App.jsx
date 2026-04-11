@@ -11,6 +11,7 @@ import MenuItemCard from './features/menu/MenuItemCard';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminMenuPage from './pages/AdminMenuPage';
+import AdminRevenuePage from './pages/AdminRevenuePage';
 import MyOrdersPage from './pages/MyOrdersPage';
 
 const HomePage = () => {
@@ -80,6 +81,7 @@ function App() {
             <Route path="/orders/mine" element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>} />
             <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/orders" element={<ProtectedRoute adminOnly><AdminOrdersPage /></ProtectedRoute>} />
+            <Route path="/admin/revenue" element={<ProtectedRoute adminOnly><AdminRevenuePage /></ProtectedRoute>} />
             <Route path="/admin/menu" element={<ProtectedRoute adminOnly><AdminMenuPage /></ProtectedRoute>} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

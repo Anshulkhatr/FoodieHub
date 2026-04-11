@@ -159,7 +159,7 @@ const AdminMenuPage = () => {
               <tr key={item._id} className="hover:bg-background/50 transition-colors">
                 <td className="px-6 py-4 font-medium">{item.name}</td>
                 <td className="px-6 py-4 text-text-muted">{item.category}</td>
-                <td className="px-6 py-4 font-bold text-primary">${(item.price || 0).toFixed(2)}</td>
+                <td className="px-6 py-4 font-bold text-primary">₹{(item.price || 0).toFixed(2)}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 text-xs font-bold rounded-md ${item.isAvailable ? 'bg-success/10 text-success' : 'bg-red-500/10 text-red-500'}`}>
                     {item.isAvailable ? 'Active' : 'Hidden'}
@@ -219,7 +219,7 @@ const AdminMenuPage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">Price ($)</label>
+              <label className="block text-sm font-semibold mb-1">Price (₹)</label>
               <input 
                 type="number" 
                 name="price"

@@ -3,6 +3,7 @@ import axiosInstance from '../utils/axiosInstance';
 import Spinner from '../components/Spinner';
 import Badge from '../components/Badge';
 import StatusDropdown from '../components/StatusDropdown';
+import { Trash2 } from 'lucide-react';
 
 const AdminOrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -34,6 +35,20 @@ const AdminOrdersPage = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this delivered order? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await axiosInstance.delete(`/orders/${id}`);
+      setOrders(orders.filter(o => o._id !== id));
+    } catch (error) {
+      console.error('Failed to delete order:', error);
+      alert('Failed to delete order. Please try again.');
+    }
+  };
+
   if (isLoading) return <div className="flex justify-center p-10"><Spinner size={40} /></div>;
 
   return (
@@ -55,14 +70,23 @@ const AdminOrdersPage = () => {
               <tr key={order._id} className="hover:bg-background/50 transition-colors">
                 <td className="px-6 py-4 font-mono text-text-muted text-xs">{order._id ? order._id.toString().substring(order._id.toString().length - 6).toUpperCase() : 'UNKNOWN'}</td>
                 <td className="px-6 py-4 font-medium">{order.user?.name || 'Guest'}</td>
-                <td className="px-6 py-4 font-bold text-primary">${(order.totalPrice || 0).toFixed(2)}</td>
+                <td className="px-6 py-4 font-bold text-primary">₹{(order.totalPrice || 0).toFixed(2)}</td>
                 <td className="px-6 py-4 text-text-muted">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown Date'}</td>
                 <td className="px-6 py-4 flex items-center gap-3">
                   <div className="w-24">
                     <Badge status={order.status} />
                   </div>
-                  <div className="w-32">
+                  <div className="w-32 flex items-center gap-2">
                     <StatusDropdown currentStatus={order.status} onStatusChange={(s) => handleStatusChange(order._id, s)} />
+                    {order.status === 'Delivered' && (
+                      <button 
+                        onClick={() => handleDelete(order._id)}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete Delivered Order"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

@@ -21,7 +21,7 @@ const AdminDashboard = () => {
       try {
         const { data } = await axiosInstance.get('/admin/revenue');
         setRevenue(data.totalRevenue || 0);
-        setOrderCount(data.count || 0);
+        setOrderCount(data.totalOrders || 0);
       } catch (error) {
         console.error('Failed to fetch revenue stats', error);
       } finally {
@@ -39,10 +39,13 @@ const AdminDashboard = () => {
       <h1 className="text-3xl font-heading font-bold text-text-primary">Admin Dashboard</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex flex-col items-center justify-center h-40">
+        <Link to="/admin/revenue" className="bg-surface p-6 rounded-xl border border-border shadow-sm flex flex-col items-center justify-center h-40 hover:border-primary transition-all group relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">VIEW DETAILS</span>
+          </div>
           <h3 className="text-lg text-text-muted mb-2">Total Revenue</h3>
-          <p className="text-4xl font-heading font-bold text-success">${revenue.toFixed(2)}</p>
-        </div>
+          <p className="text-4xl font-heading font-bold text-success">₹{revenue.toFixed(2)}</p>
+        </Link>
         <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex flex-col items-center justify-center h-40">
           <h3 className="text-lg text-text-muted mb-2">Delivered Orders</h3>
           <p className="text-4xl font-heading font-bold text-primary">{orderCount}</p>

@@ -121,14 +121,14 @@ const MyOrdersPage = () => {
                     {order.items?.map((item, idx) => (
                       <div key={idx} className="flex justify-between items-center text-sm mb-1 text-text-muted">
                         <span>{item.quantity}x {item.menuItem?.name || 'Item'}</span>
-                        <span>${((item.price || 0) * item.quantity).toFixed(2)}</span>
+                        <span>₹{((item.price || 0) * item.quantity).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
                   
                   <div className="border-t border-border pt-4 flex justify-between items-center">
                     <span className="font-medium">Total Paid</span>
-                    <span className="text-xl font-heading font-bold text-primary">${(order.totalPrice || 0).toFixed(2)}</span>
+                    <span className="text-xl font-heading font-bold text-primary">₹{(order.totalPrice || 0).toFixed(2)}</span>
                   </div>
 
                   {needsPrompt && (
