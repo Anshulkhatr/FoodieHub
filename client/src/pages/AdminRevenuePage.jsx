@@ -40,7 +40,7 @@ const AdminRevenuePage = () => {
 
     return (
         <div className="py-6 space-y-8 animate-in fade-in duration-500">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                     <button 
                         onClick={() => navigate('/admin')}
@@ -54,7 +54,7 @@ const AdminRevenuePage = () => {
                     </div>
                 </div>
                 
-                <div className="flex bg-surface p-1 rounded-xl border border-border">
+                <div className="flex flex-wrap justify-center w-full md:w-auto bg-surface p-1 rounded-xl border border-border">
                     {['all', 'weekly', 'monthly', 'yearly'].map((p) => (
                         <button
                             key={p}

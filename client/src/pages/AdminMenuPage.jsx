@@ -136,15 +136,15 @@ const AdminMenuPage = () => {
 
   return (
     <div className="py-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-3xl font-heading font-bold text-text-primary">Manage Menu</h1>
         <Button onClick={openAddModal} className="gap-2">
           <Plus size={18} /> Add Item
         </Button>
       </div>
 
-      <div className="bg-surface border border-border rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full text-left text-sm">
+      <div className="bg-surface border border-border rounded-xl shadow-sm overflow-x-auto">
+        <table className="w-full text-left text-sm min-w-[800px]">
           <thead className="bg-background border-b border-border text-text-muted uppercase font-semibold text-xs tracking-wider">
             <tr>
               <th className="px-6 py-4">Name</th>
@@ -205,7 +205,7 @@ const AdminMenuPage = () => {
               placeholder="e.g. Wagyu Truffle Burger"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold mb-1">Category</label>
               <input 

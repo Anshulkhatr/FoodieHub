@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getMenu, getAllMenuAdmin, addItem, updateItem, deleteItem } = require('../controllers/menuController');
+const { getMenu, getMenuItemById, getAllMenuAdmin, addItem, updateItem, deleteItem } = require('../controllers/menuController');
 const { protect } = require('../middleware/authMiddleware');
 const { admin } = require('../middleware/adminMiddleware');
 
@@ -12,6 +12,7 @@ router.route('/admin')
   .get(protect, admin, getAllMenuAdmin);
 
 router.route('/:id')
+  .get(getMenuItemById)
   .put(protect, admin, updateItem)
   .delete(protect, admin, deleteItem);
 

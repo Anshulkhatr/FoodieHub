@@ -9,6 +9,21 @@ const getMenu = async (req, res) => {
   }
 };
 
+const getMenuItemById = async (req, res) => {
+  try {
+    const item = await MenuItem.findById(req.params.id);
+    if (!item) return res.status(404).json({ message: 'Item not found' });
+    const related = await MenuItem.find({
+      _id: { $ne: item._id },
+      category: item.category,
+      isAvailable: true,
+    }).limit(6);
+    res.json({ item, related });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const getAllMenuAdmin = async (req, res) => {
   try {
     const menu = await MenuItem.find();
@@ -48,4 +63,4 @@ const deleteItem = async (req, res) => {
   }
 };
 
-module.exports = { getMenu, getAllMenuAdmin, addItem, updateItem, deleteItem };
+module.exports = { getMenu, getMenuItemById, getAllMenuAdmin, addItem, updateItem, deleteItem };

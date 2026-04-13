@@ -54,8 +54,8 @@ const AdminOrdersPage = () => {
   return (
     <div className="py-6">
       <h1 className="text-3xl font-heading font-bold text-text-primary mb-6">Manage Orders</h1>
-      <div className="bg-surface border border-border rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full text-left text-sm">
+      <div className="bg-surface border border-border rounded-xl shadow-sm overflow-x-auto">
+        <table className="w-full text-left text-sm min-w-[800px]">
           <thead className="bg-background border-b border-border text-text-muted uppercase font-semibold text-xs tracking-wider">
             <tr>
               <th className="px-6 py-4">Order ID</th>
@@ -79,7 +79,7 @@ const AdminOrdersPage = () => {
                   <div className="w-32 flex items-center gap-2">
                     <StatusDropdown currentStatus={order.status} onStatusChange={(s) => handleStatusChange(order._id, s)} />
                     {order.status === 'Delivered' && (
-                      <button 
+                      <button
                         onClick={() => handleDelete(order._id)}
                         className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete Delivered Order"

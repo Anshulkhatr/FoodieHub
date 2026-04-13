@@ -14,6 +14,7 @@ import AdminMenuPage from './pages/AdminMenuPage';
 import AdminRevenuePage from './pages/AdminRevenuePage';
 import MyOrdersPage from './pages/MyOrdersPage';
 import LandingPage from './pages/LandingPage';
+import MenuItemDetailPage from './pages/MenuItemDetailPage';
 
 const MenuPage = () => {
   const [menu, setMenu] = useState([]);
@@ -71,13 +72,14 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="min-h-screen bg-background text-text-primary font-sans flex flex-col relative overflow-hidden">
         <Navbar toggleCart={() => setIsCartOpen(true)} />
         <main className="flex-1 w-full relative z-10 overflow-y-auto">
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/menu" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><MenuPage /></div>} />
+            <Route path="/menu/:id" element={<MenuItemDetailPage />} />
             <Route path="/login" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><LoginPage /></div>} />
             <Route path="/register" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><RegisterPage /></div>} />
             <Route path="/orders/mine" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute><MyOrdersPage /></ProtectedRoute></div>} />
