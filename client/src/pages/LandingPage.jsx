@@ -37,7 +37,7 @@ const Counter = ({ from, to, suffix }) => {
 };
 
 /* ── Menu card for featured items ── */
-const FeaturedCard = ({ item }) => (
+const FeaturedCard = ({ item, user }) => (
   <div className="group bg-white rounded-3xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 border border-orange-50">
     <div className="relative h-52 overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50">
       {item.image ? (
@@ -60,7 +60,7 @@ const FeaturedCard = ({ item }) => (
       <div className="flex gap-0.5 mb-4">
         {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="#f97316" stroke="none" />)}
       </div>
-      <Link to="/#menu" className="block w-full text-center bg-gradient-to-r from-orange-400 to-amber-400 hover:from-orange-500 hover:to-amber-500 text-white font-semibold py-2.5 rounded-2xl transition-all duration-300 shadow hover:shadow-lg text-sm">
+      <Link to={user ? "/#menu" : "/login"} className="block w-full text-center bg-gradient-to-r from-orange-400 to-amber-400 hover:from-orange-500 hover:to-amber-500 text-white font-semibold py-2.5 rounded-2xl transition-all duration-300 shadow hover:shadow-lg text-sm">
         Order Now
       </Link>
     </div>
@@ -122,7 +122,7 @@ const LandingPage = () => {
             </p>
             <div className="flex flex-wrap gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
               <Link
-                to={user ? '/#menu' : '/register'}
+                to={user ? '/#menu' : '/login'}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 to-amber-500 hover:from-orange-500 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-2xl shadow-xl hover:shadow-orange-200 transition-all duration-300 transform hover:scale-105 text-lg"
               >
                 {user ? 'Explore Menu' : 'Get Started'}
@@ -225,7 +225,7 @@ const LandingPage = () => {
               </Link>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
-              {featured.map(item => <FeaturedCard key={item._id} item={item} />)}
+              {featured.map(item => <FeaturedCard key={item._id} item={item} user={user} />)}
             </div>
           </div>
         </section>
@@ -356,7 +356,7 @@ const LandingPage = () => {
             Join thousands of food lovers who trust FoodieHub for their daily meals. Sign up now and get your first order experience.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link to={user ? '/#menu' : '/register'} className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 text-lg">
+            <Link to={user ? '/#menu' : '/login'} className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 text-lg">
               {user ? 'Order Now' : 'Create Free Account'}
               <ChevronRight size={20} />
             </Link>

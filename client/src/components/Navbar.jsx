@@ -142,55 +142,63 @@ const Navbar = ({ toggleCart }) => {
 
   return (
     <nav className="sticky top-0 z-50 bg-surface/90 backdrop-blur-md border-b border-border shadow-sm">
-      <div className="flex items-center justify-between py-4 px-4 sm:px-6">
-        {/* Logo */}
-        <Link to="/" className="text-2xl sm:text-3xl font-heading font-bold text-primary flex items-center gap-2 flex-shrink-0">
-          <span>FoodieHub</span>
-        </Link>
+      <div className="flex items-center justify-between py-4 px-4 sm:px-6 w-full">
+        {/* Left Section: Logo & Search */}
+        <div className="flex items-center gap-6 flex-1 min-w-0">
+          {/* Logo */}
+          <Link to="/" className="text-2xl sm:text-3xl font-heading font-bold text-primary flex items-center gap-2 flex-shrink-0">
+            <span>FoodieHub</span>
+          </Link>
 
-        {/* Search — Desktop */}
-        {user && <NavSearchBar isMobile={false} />}
-
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-4 ml-auto">
-          {user ? (
-            <>
-              {user.role === 'admin' && (
-                <Link to="/admin/dashboard" className="text-text-muted hover:text-primary font-medium transition-colors">Admin Panel</Link>
-              )}
-              <Link to="/menu" className="text-text-muted hover:text-primary font-medium transition-colors">Menu</Link>
-              <Link to="/orders/mine" className="text-text-muted hover:text-primary font-medium transition-colors">My Orders</Link>
-              <button onClick={toggleCart} className="relative p-2 text-text-primary hover:text-primary transition-colors">
-                <ShoppingCart size={24} />
-                {cartCount > 0 && (
-                  <span className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center translate-x-1/4 -translate-y-1/4 shadow-sm border-2 border-surface">{cartCount}</span>
-                )}
-              </button>
-              <div className="flex items-center gap-2 text-text-muted border-l pl-4 border-border">
-                <div className="bg-primary/10 text-primary p-2 rounded-full"><UserIcon size={18} /></div>
-                <span className="text-sm font-medium mr-2 max-w-[100px] truncate" title={user.name}>{user.name}</span>
-                <button title="Logout" onClick={handleLogout} className="hover:text-red-500 transition-colors p-2 bg-surface hover:bg-red-50 rounded-full border border-transparent hover:border-red-100"><LogOut size={16} /></button>
-              </div>
-            </>
-          ) : (
-             <div className="flex items-center gap-3">
-              <Link to="/login"><Button variant="ghost">Log In</Button></Link>
-              <Link to="/register"><Button variant="primary">Sign Up</Button></Link>
-            </div>
-          )}
+          {/* Search — Desktop */}
+          <div className="hidden md:flex flex-1 max-w-sm">
+            {user && <NavSearchBar isMobile={false} />}
+          </div>
         </div>
 
-        {/* Mobile controls */}
-        <div className="flex md:hidden items-center gap-2">
-          {user && (
-            <button onClick={toggleCart} className="relative p-2 text-text-primary hover:text-primary transition-colors">
-              <ShoppingCart size={22} />
-              {cartCount > 0 && <span className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{cartCount}</span>}
+        {/* Desktop & Mobile Right Nav */}
+        <div className="flex-shrink-0 flex items-center justify-end gap-2">
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-3 lg:gap-4">
+            {user ? (
+              <>
+                {user.role === 'admin' && (
+                  <Link to="/admin/dashboard" className="text-text-muted hover:text-primary font-medium transition-colors whitespace-nowrap">Admin</Link>
+                )}
+                <Link to="/menu" className="text-text-muted hover:text-primary font-medium transition-colors whitespace-nowrap">Menu</Link>
+                <Link to="/orders/mine" className="text-text-muted hover:text-primary font-medium transition-colors whitespace-nowrap">My Orders</Link>
+                <button onClick={toggleCart} className="relative p-2 text-text-primary hover:text-primary transition-colors">
+                  <ShoppingCart size={24} />
+                  {cartCount > 0 && (
+                    <span className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center translate-x-1/4 -translate-y-1/4 shadow-sm border-2 border-surface">{cartCount}</span>
+                  )}
+                </button>
+                <div className="flex items-center gap-2 text-text-muted border-l pl-3 lg:pl-4 border-border ml-1 lg:ml-2">
+                  <div className="bg-primary/10 text-primary p-2 rounded-full hidden lg:flex"><UserIcon size={18} /></div>
+                  <span className="text-sm font-medium mr-1 lg:mr-2 max-w-[80px] lg:max-w-[100px] truncate" title={user.name}>{user.name}</span>
+                  <button title="Logout" onClick={handleLogout} className="hover:text-red-500 transition-colors p-2 bg-surface hover:bg-red-50 rounded-full border border-transparent hover:border-red-100 flex-shrink-0"><LogOut size={16} /></button>
+                </div>
+              </>
+            ) : (
+               <div className="flex items-center gap-3">
+                <Link to="/login"><Button variant="ghost">Log In</Button></Link>
+                <Link to="/register"><Button variant="primary">Sign Up</Button></Link>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile controls */}
+          <div className="flex md:hidden items-center gap-2">
+            {user && (
+              <button onClick={toggleCart} className="relative p-2 text-text-primary hover:text-primary transition-colors">
+                <ShoppingCart size={22} />
+                {cartCount > 0 && <span className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{cartCount}</span>}
+              </button>
+            )}
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-text-primary hover:bg-background rounded-lg border border-transparent transition-colors">
+               {mobileMenuOpen ? <X size={24} /> : <MenuIcon size={24} />}
             </button>
-          )}
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-text-primary hover:bg-background rounded-lg border border-transparent transition-colors">
-             {mobileMenuOpen ? <X size={24} /> : <MenuIcon size={24} />}
-          </button>
+          </div>
         </div>
       </div>
 
