@@ -8,6 +8,7 @@ import { Trash2, Package, User, CreditCard, Calendar, Filter, ChevronDown, Packa
 const AdminOrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     fetchOrders();
@@ -23,6 +24,13 @@ const AdminOrdersPage = () => {
       setIsLoading(false);
     }
   };
+
+  const filteredOrders = orders.filter(order => {
+    if (filter === 'all') return true;
+    if (filter === 'pending') return order.status !== 'Delivered';
+    if (filter === 'delivered') return order.status === 'Delivered';
+    return true;
+  });
 
   const handleStatusChange = async (id, newStatus) => {
     try {
@@ -62,13 +70,28 @@ const AdminOrdersPage = () => {
         </div>
         
         <div className="flex items-center gap-2 bg-surface p-1 rounded-xl border border-border">
-          <button className="px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg shadow-sm">All Orders</button>
-          <button className="px-4 py-2 text-text-muted hover:text-text-primary text-xs font-bold rounded-lg transition-colors">Pending</button>
-          <button className="px-4 py-2 text-text-muted hover:text-text-primary text-xs font-bold rounded-lg transition-colors">Delivered</button>
+          <button 
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${filter === 'all' ? 'bg-primary text-white shadow-sm' : 'text-text-muted hover:text-text-primary'}`}
+          >
+            All Orders
+          </button>
+          <button 
+            onClick={() => setFilter('pending')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${filter === 'pending' ? 'bg-primary text-white shadow-sm' : 'text-text-muted hover:text-text-primary'}`}
+          >
+            Pending
+          </button>
+          <button 
+            onClick={() => setFilter('delivered')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${filter === 'delivered' ? 'bg-primary text-white shadow-sm' : 'text-text-muted hover:text-text-primary'}`}
+          >
+            Delivered
+          </button>
         </div>
       </div>
 
-      {orders.length === 0 ? (
+      {filteredOrders.length === 0 ? (
         <div className="bg-surface border border-border border-dashed rounded-3xl p-16 text-center">
             <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mx-auto mb-6">
                 <PackageOpen className="text-text-muted" size={40} />
@@ -91,7 +114,7 @@ const AdminOrdersPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {orders.map(order => (
+                {filteredOrders.map(order => (
                   <tr key={order._id} className="hover:bg-background/30 transition-colors group">
                     <td className="px-8 py-6 font-mono text-xs font-bold text-primary">
                         <span className="bg-primary/5 px-2 py-1 rounded">#{order._id?.toString().slice(-6).toUpperCase()}</span>
@@ -141,7 +164,7 @@ const AdminOrdersPage = () => {
 
           {/* Mobile Card View */}
           <div className="lg:hidden space-y-4">
-            {orders.map(order => (
+            {filteredOrders.map(order => (
               <div key={order._id} className="bg-surface rounded-2xl border border-border p-6 space-y-4 shadow-sm active:scale-[0.98] transition-transform">
                 <div className="flex justify-between items-start">
                    <div>
