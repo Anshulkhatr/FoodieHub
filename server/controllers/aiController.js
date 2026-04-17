@@ -16,7 +16,7 @@ const generateDescription = async (req, res) => {
     const prompt = `Write a mouth-watering 2-sentence menu description for a dish called ${name} in the ${category} category.`;
 
     const completion = await client.chat.completions.create({
-      model: "deepseek-ai/deepseek-v3.1",
+      model: "qwen/qwen3-next-80b-a3b-instruct",
       messages: [
         { 
           role: "user", 
@@ -55,7 +55,7 @@ const getOrderStatusAI = async (req, res) => {
       Limit to 15-20 words. Make it sound helpful and friendly.`;
 
     const completion = await client.chat.completions.create({
-      model: "deepseek-ai/deepseek-v3.1",
+      model: "qwen/qwen3-next-80b-a3b-instruct",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
       max_tokens: 100,
