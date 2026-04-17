@@ -60,8 +60,8 @@ const FeaturedCard = ({ item, user }) => (
       <div className="flex gap-0.5 mb-4">
         {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="#f97316" stroke="none" />)}
       </div>
-      <Link to={user ? "/#menu" : "/login"} className="block w-full text-center bg-gradient-to-r from-orange-400 to-amber-400 hover:from-orange-500 hover:to-amber-500 text-white font-semibold py-2.5 rounded-2xl transition-all duration-300 shadow hover:shadow-lg text-sm">
-        Order Now
+      <Link to={user ? "/menu" : "/login"} className="block w-full text-center bg-gradient-to-r from-orange-400 to-amber-400 hover:from-orange-500 hover:to-amber-500 text-white font-semibold py-2.5 rounded-2xl transition-all duration-300 shadow hover:shadow-lg text-sm">
+        {user ? 'Order Now' : 'Login to Order'}
       </Link>
     </div>
   </div>
@@ -122,7 +122,7 @@ const LandingPage = () => {
             </p>
             <div className="flex flex-wrap gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
               <Link
-                to={user ? '/#menu' : '/login'}
+                to={user ? '/menu' : '/register'}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 to-amber-500 hover:from-orange-500 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-2xl shadow-xl hover:shadow-orange-200 transition-all duration-300 transform hover:scale-105 text-lg"
               >
                 {user ? 'Explore Menu' : 'Get Started'}
@@ -219,7 +219,7 @@ const LandingPage = () => {
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-heading font-extrabold text-gray-900">Featured Dishes</h2>
               </div>
-              <Link to="/#menu" className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-600 font-bold transition-colors group">
+              <Link to="/menu" className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-600 font-bold transition-colors group">
                 View Full Menu
                 <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -293,7 +293,7 @@ const LandingPage = () => {
                 </div>
               ))}
             </div>
-            <Link to={user ? '/#menu' : '/login'} className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 to-amber-500 text-white font-bold px-8 py-4 rounded-2xl shadow-lg hover:shadow-orange-200 transition-all duration-300 transform hover:scale-105">
+            <Link to={user ? '/menu' : '/login'} className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 to-amber-500 text-white font-bold px-8 py-4 rounded-2xl shadow-lg hover:shadow-orange-200 transition-all duration-300 transform hover:scale-105">
               {user ? 'Order Now' : 'Sign In to Order'}
               <ChevronRight size={18} />
             </Link>
@@ -356,7 +356,7 @@ const LandingPage = () => {
             Join thousands of food lovers who trust FoodieHub for their daily meals. Sign up now and get your first order experience.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link to={user ? '/#menu' : '/login'} className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 text-lg">
+            <Link to={user ? '/menu' : '/register'} className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 text-lg">
               {user ? 'Order Now' : 'Create Free Account'}
               <ChevronRight size={20} />
             </Link>
