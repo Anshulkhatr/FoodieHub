@@ -3,7 +3,7 @@ import axiosInstance from '../utils/axiosInstance';
 import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
-import { Plus, Edit2, Trash2, Camera, FileText, Sparkles } from 'lucide-react';
+import { Plus, Edit2, Trash2, Camera, FileText, Sparkles, Utensils, Search, Filter, Eye, EyeOff, ExternalLink } from 'lucide-react';
 
 const AdminMenuPage = () => {
   const [menu, setMenu] = useState([]);
@@ -97,13 +97,12 @@ const AdminMenuPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSaving(true);
     const submissionData = {
       ...formData,
       price: Number(formData.price)
     };
     
-    console.log('Submitting Item Data:', submissionData);
-
     try {
       if (isEditing) {
         await axiosInstance.put(`/menu/${currentItemId}`, submissionData);
@@ -132,200 +131,164 @@ const AdminMenuPage = () => {
     }
   };
 
-  if (isLoading) return <div className="flex justify-center p-10"><Spinner size={40} /></div>;
+  if (isLoading) return <div className="flex justify-center p-20"><Spinner size={48} /></div>;
 
   return (
-    <div className="py-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h1 className="text-3xl font-heading font-bold text-text-primary">Manage Menu</h1>
-        <Button onClick={openAddModal} className="gap-2">
-          <Plus size={18} /> Add Item
+    <div className="py-8 space-y-8 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Utensils className="text-primary" size={20} />
+            <span className="text-xs font-bold text-primary uppercase tracking-widest">Kitchen Inventory</span>
+          </div>
+          <h1 className="text-3xl font-heading font-extrabold text-text-primary">Gourmet Collections</h1>
+        </div>
+        <Button onClick={openAddModal} className="gap-2 px-8 py-4 shadow-xl shadow-primary/20 transform active:scale-95 transition-all">
+          <Plus size={18} /> Add New Dish
         </Button>
       </div>
 
-      <div className="bg-surface border border-border rounded-xl shadow-sm overflow-x-auto">
-        <table className="w-full text-left text-sm min-w-[800px]">
-          <thead className="bg-background border-b border-border text-text-muted uppercase font-semibold text-xs tracking-wider">
-            <tr>
-              <th className="px-6 py-4">Name</th>
-              <th className="px-6 py-4">Category</th>
-              <th className="px-6 py-4">Price</th>
-              <th className="px-6 py-4">Status</th>
-              <th className="px-6 py-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {menu.map(item => (
-              <tr key={item._id} className="hover:bg-background/50 transition-colors">
-                <td className="px-6 py-4 font-medium">{item.name}</td>
-                <td className="px-6 py-4 text-text-muted">{item.category}</td>
-                <td className="px-6 py-4 font-bold text-primary">₹{(item.price || 0).toFixed(2)}</td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 text-xs font-bold rounded-md ${item.isAvailable ? 'bg-success/10 text-success' : 'bg-red-500/10 text-red-500'}`}>
-                    {item.isAvailable ? 'Active' : 'Hidden'}
-                  </span>
-                </td>
-                <td className="px-6 py-4 flex items-center justify-end gap-3">
-                  <button 
-                    className="text-info hover:text-blue-700 transition-colors" 
-                    title="Edit"
-                    onClick={() => openEditModal(item)}
-                  >
-                    <Edit2 size={18} />
-                  </button>
-                  <button 
-                    className="text-red-500 hover:text-red-700 transition-colors" 
-                    title="Delete" 
-                    onClick={() => handleDelete(item._id)}
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Grid View */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {menu.map(item => (
+          <div key={item._id} className="group bg-surface border border-border rounded-3xl overflow-hidden hover:shadow-2xl hover:border-primary/20 transition-all duration-500 flex flex-col h-full">
+            <div className="relative h-48 overflow-hidden bg-background">
+              {item.image ? (
+                <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-5xl">🍽️</div>
+              )}
+              <div className="absolute top-3 right-3 flex gap-1.5">
+                   <div className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter shadow-sm border ${item.isAvailable ? 'bg-success/90 text-white border-success' : 'bg-red-500/90 text-white border-red-500'}`}>
+                        {item.isAvailable ? 'Live' : 'Hidden'}
+                   </div>
+                   <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter text-text-primary shadow-sm border border-border/50">
+                        {item.category}
+                   </div>
+              </div>
+            </div>
+            
+            <div className="p-5 flex-1 flex flex-col">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1">{item.name}</h3>
+                <span className="font-heading font-black text-primary whitespace-nowrap ml-2">₹{item.price?.toFixed(2)}</span>
+              </div>
+              <p className="text-xs text-text-muted line-clamp-2 mb-6 leading-relaxed flex-1">
+                {item.desc || 'No description provided for this culinary masterpiece.'}
+              </p>
+              
+              <div className="flex gap-2 p-1 bg-background rounded-2xl border border-border/50 transition-colors group-hover:border-primary/10">
+                <button 
+                  onClick={() => openEditModal(item)}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-primary hover:bg-white rounded-xl transition-all"
+                >
+                  <Edit2 size={12} /> Edit
+                </button>
+                <div className="w-px h-4 self-center bg-border/50"></div>
+                <button 
+                  onClick={() => handleDelete(item._id)}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-red-500 hover:bg-white rounded-xl transition-all"
+                >
+                  <Trash2 size={12} /> Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        title={isEditing ? 'Edit Menu Item' : 'Add New Menu Item'}
+        title={isEditing ? 'Refine Dish Details' : 'Design New Masterpiece'}
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-semibold mb-1">Item Name</label>
-            <input 
-              type="text" 
-              name="name"
-              required
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full p-3 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none"
-              placeholder="e.g. Wagyu Truffle Burger"
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold mb-1">Category</label>
-              <input 
-                type="text" 
-                name="category"
-                required
-                value={formData.category}
-                onChange={handleInputChange}
-                className="w-full p-3 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none"
-                placeholder="e.g. Mains"
-              />
+        <form onSubmit={handleSubmit} className="space-y-6 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-text-muted uppercase tracking-widest px-1">Dish Identity</label>
+                    <div className="relative">
+                        <input 
+                        type="text" name="name" required value={formData.name} onChange={handleInputChange}
+                        className="w-full p-4 bg-background border border-border rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all font-medium text-sm"
+                        placeholder="e.g. Signature Wagyu"
+                        />
+                    </div>
+                </div>
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-text-muted uppercase tracking-widest px-1">Collection / Category</label>
+                    <input 
+                        type="text" name="category" required value={formData.category} onChange={handleInputChange}
+                        className="w-full p-4 bg-background border border-border rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all font-medium text-sm"
+                        placeholder="e.g. Grand Entrées"
+                    />
+                </div>
             </div>
-            <div>
-              <label className="block text-sm font-semibold mb-1">Price (₹)</label>
-              <input 
-                type="number" 
-                name="price"
-                step="0.01"
-                required
-                value={formData.price}
-                onChange={handleInputChange}
-                className="w-full p-3 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none"
-                placeholder="0.00"
-              />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-text-muted uppercase tracking-widest px-1">Price Point (₹)</label>
+                    <input 
+                        type="number" name="price" step="0.01" required value={formData.price} onChange={handleInputChange}
+                        className="w-full p-4 bg-background border border-border rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all font-bold text-primary"
+                        placeholder="0.00"
+                    />
+                </div>
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-text-muted uppercase tracking-widest px-1">Direct Pinterest Link</label>
+                    <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted/50"><Camera size={18} /></span>
+                        <input 
+                            type="text" name="image" required value={formData.image} onChange={handleInputChange}
+                            className="w-full p-4 pl-12 bg-background border border-border rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all text-sm"
+                            placeholder="https://i.pinimg.com/..."
+                        />
+                    </div>
+                </div>
             </div>
-          </div>
-          <div>
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-sm font-semibold">Description</label>
-              <button 
-                type="button"
-                onClick={handleGenerateDescription}
-                disabled={isGenerating}
-                className="text-xs flex items-center gap-1.5 px-2 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase font-bold tracking-wider"
-              >
-                {isGenerating ? (
-                  <>
-                    <div className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles size={14} />
-                    Generate with AI
-                  </>
-                )}
-              </button>
-            </div>
-            <textarea 
-              name="desc"
-              required
-              value={formData.desc}
-              onChange={handleInputChange}
-              rows="3"
-              className="w-full p-3 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none resize-none"
-              placeholder="Describe the dish flavors and ingredients..."
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold mb-1">Image URL (Direct Pinterest Link)</label>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <input 
-                  type="text" 
-                  name="image"
-                  required
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  className="w-full p-3 pl-10 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none"
-                  placeholder="https://i.pinimg.com/originals/... (use direct image link)"
+
+            <div className="space-y-2">
+                <div className="flex justify-between items-end px-1">
+                    <label className="text-[10px] font-black text-text-muted uppercase tracking-widest">Culinary Story</label>
+                    <button 
+                        type="button" onClick={handleGenerateDescription} disabled={isGenerating}
+                        className="group relative overflow-hidden text-[10px] font-black uppercase tracking-widest flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-orange-400 text-white rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all disabled:opacity-50"
+                    >
+                        <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                        {isGenerating ? <Spinner size={12} className="text-white" /> : <Sparkles size={14} className="animate-pulse" />}
+                        {isGenerating ? 'AI Conjuring...' : 'Generate with AI'}
+                    </button>
+                </div>
+                <textarea 
+                    name="desc" required value={formData.desc} onChange={handleInputChange} rows="4"
+                    className="w-full p-4 bg-background border border-border rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all resize-none text-sm leading-relaxed"
+                    placeholder="Tell a story about the flavors, heritage, and ingredients..."
                 />
-                <Camera size={18} className="absolute left-3 top-3.5 text-text-muted" />
-              </div>
             </div>
-            <p className="text-xs text-text-muted mt-1 italic">Tip: Right-click a Pinterest image and select 'Copy image address'.</p>
-          </div>
-          <div>
-            <label className="block text-sm font-semibold mb-1">External Link (Pinterest/Details)</label>
-            <div className="relative">
-              <input 
-                type="text" 
-                name="externalLink"
-                value={formData.externalLink}
-                onChange={handleInputChange}
-                className="w-full p-3 pl-10 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none"
-                placeholder="https://pinterest.com/pin/..."
-              />
-              <FileText size={18} className="absolute left-3 top-3.5 text-text-muted" />
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-background rounded-2xl border border-border/50">
+                <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-xl border ${formData.isAvailable ? 'bg-success/10 border-success/30 text-success' : 'bg-red-500/10 border-red-500/30 text-red-500'}`}>
+                        {formData.isAvailable ? <Eye size={18} /> : <EyeOff size={18} />}
+                    </div>
+                    <div>
+                        <p className="text-xs font-bold text-text-primary">Steward Visibility</p>
+                        <p className="text-[10px] text-text-muted uppercase font-black">{formData.isAvailable ? 'Visible for customers' : 'Hidden from menu'}</p>
+                    </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" name="isAvailable" checked={formData.isAvailable} onChange={handleInputChange} className="sr-only peer" />
+                    <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
             </div>
-            <p className="text-xs text-text-muted mt-1">If provided, the image will link to this URL.</p>
-          </div>
-          <div className="flex items-center gap-2 py-2">
-            <input 
-              type="checkbox" 
-              id="isAvailable"
-              name="isAvailable"
-              checked={formData.isAvailable}
-              onChange={handleInputChange}
-              className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
-            />
-            <label htmlFor="isAvailable" className="text-sm font-medium">Item is available for ordering</label>
-          </div>
-          <div className="flex gap-3 pt-4">
-            <Button 
-              type="button" 
-              variant="secondary" 
-              className="flex-1" 
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
-              className="flex-1" 
-              isLoading={isSaving}
-              disabled={isSaving}
-            >
-              {isEditing ? 'Save Changes' : 'Create Item'}
-            </Button>
-          </div>
+
+            <div className="flex gap-4 pt-4">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-4 text-xs font-black uppercase tracking-widest text-text-muted hover:bg-background rounded-2xl border border-transparent hover:border-border transition-all">
+                    Dismiss
+                </button>
+                <button type="submit" disabled={isSaving} className="flex-[2] py-4 bg-text-primary text-white text-xs font-black uppercase tracking-widest rounded-2xl shadow-xl hover:bg-black transition-all transform active:scale-[0.98] disabled:opacity-50">
+                    {isSaving ? <Spinner size={16} /> : (isEditing ? 'Update Creation' : 'Publish Dish')}
+                </button>
+            </div>
         </form>
       </Modal>
     </div>

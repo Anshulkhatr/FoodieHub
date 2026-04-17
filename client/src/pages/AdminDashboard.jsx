@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
+import { LayoutDashboard, ShoppingBag, Utensils, TrendingUp, ChevronRight, Activity } from 'lucide-react';
 import axiosInstance from '../utils/axiosInstance';
 import Spinner from '../components/Spinner';
 
@@ -32,35 +33,103 @@ const AdminDashboard = () => {
     fetchStats();
   }, [user, navigate]);
 
-  if (isLoading) return <div className="flex justify-center p-10"><Spinner size={40} /></div>;
+  if (isLoading) return <div className="flex justify-center p-20"><Spinner size={48} /></div>;
+
+  const cards = [
+    { title: 'Total Revenue', value: `₹${revenue.toFixed(2)}`, label: 'All Time', icon: TrendingUp, color: 'text-success', bg: 'bg-success/10', link: '/admin/revenue' },
+    { title: 'Total Orders', value: orderCount, label: 'Successfully Delivered', icon: ShoppingBag, color: 'text-primary', bg: 'bg-primary/10', link: '/admin/orders' },
+  ];
 
   return (
-    <div className="py-6 space-y-6">
-      <h1 className="text-3xl font-heading font-bold text-text-primary">Admin Dashboard</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Link to="/admin/revenue" className="bg-surface p-6 rounded-xl border border-border shadow-sm flex flex-col items-center justify-center h-40 hover:border-primary transition-all group relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-2">
-            <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ANALYTICS</span>
+    <div className="py-8 space-y-10 animate-fade-in-up">
+      {/* Header section with decorative element */}
+      <div className="relative">
+        <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl -z-10 animate-pulse-slow"></div>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-primary/10 rounded-lg text-primary">
+            <LayoutDashboard size={24} />
           </div>
-          <h3 className="text-lg text-text-muted mb-2">Total Revenue (All Time)</h3>
-          <p className="text-4xl font-heading font-bold text-success">₹{revenue.toFixed(2)}</p>
-          <p className="text-[10px] text-text-muted mt-2 opacity-0 group-hover:opacity-100 transition-opacity">Click to view detailed reports</p>
-        </Link>
-        <div className="bg-surface p-6 rounded-xl border border-border shadow-sm flex flex-col items-center justify-center h-40">
-          <h3 className="text-lg text-text-muted mb-2">Delivered Orders</h3>
-          <p className="text-4xl font-heading font-bold text-primary">{orderCount}</p>
+          <span className="text-sm font-bold text-primary uppercase tracking-widest">Admin Control</span>
         </div>
+        <h1 className="text-4xl font-heading font-extrabold text-text-primary">Executive Dashboard</h1>
+        <p className="text-text-muted mt-2 max-w-2xl">Overview of your restaurant's performance and management tools. Track growth and manage operations seamlessly.</p>
+      </div>
+      
+      {/* Stat Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {cards.map((card, i) => (
+          <Link 
+            key={i}
+            to={card.link} 
+            className="group bg-surface p-8 rounded-3xl border border-border shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-500 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-text-muted mb-1">{card.title}</p>
+                <h3 className={`text-4xl font-heading font-bold ${card.color}`}>{card.value}</h3>
+                <div className="flex items-center gap-1.5 mt-2 text-xs text-text-muted font-medium bg-background px-2 py-1 rounded-full w-fit border border-border/50">
+                  <Activity size={12} className="text-primary" />
+                  {card.label}
+                </div>
+              </div>
+              <div className={`${card.bg} p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                <card.icon className={card.color} size={28} />
+              </div>
+            </div>
+            
+            <div className="mt-6 flex items-center gap-1 text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
+              VIEW DETAILED REPORT <ChevronRight size={14} />
+            </div>
+          </Link>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <Link to="/admin/menu" className="block p-6 bg-surface border border-border rounded-xl shadow-sm hover:border-primary transition-colors group">
-          <h2 className="text-xl font-bold font-heading group-hover:text-primary transition-colors">Manage Menu</h2>
-          <p className="text-text-muted mt-2">Add, edit, or remove items from the restaurant menu. Includes AI generation tools.</p>
+      {/* Action Links Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        <Link 
+          to="/admin/menu" 
+          className="group relative block p-8 bg-surface border border-border rounded-3xl shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300 overflow-hidden"
+        >
+          <div className="absolute -right-4 -bottom-4 text-primary/5 group-hover:text-primary/10 transition-colors">
+            <Utensils size={120} strokeWidth={1} />
+          </div>
+          <div className="relative z-10">
+            <h2 className="text-2xl font-bold font-heading text-text-primary group-hover:text-primary transition-colors flex items-center gap-2">
+              Manage Menu
+              <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </h2>
+            <p className="text-text-muted mt-3 text-sm leading-relaxed max-w-md">
+              Catalog your culinary offerings. Add new dishes, adjust pricing, and use AI to generate gourmet descriptions that captivate customers.
+            </p>
+            <div className="mt-6 flex gap-2">
+              <span className="text-[10px] bg-primary/10 text-primary px-2 py-1 rounded-md font-bold uppercase tracking-tighter">AI Enabled</span>
+              <span className="text-[10px] bg-background text-text-muted px-2 py-1 rounded-md font-bold uppercase tracking-tighter border border-border">Menu Editor</span>
+            </div>
+          </div>
         </Link>
-        <Link to="/admin/orders" className="block p-6 bg-surface border border-border rounded-xl shadow-sm hover:border-primary transition-colors group">
-          <h2 className="text-xl font-bold font-heading group-hover:text-primary transition-colors">Manage Orders</h2>
-          <p className="text-text-muted mt-2">View active orders and update their statuses (Pending, Preparing, Ready, Delivered).</p>
+
+        <Link 
+          to="/admin/orders" 
+          className="group relative block p-8 bg-surface border border-border rounded-3xl shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300 overflow-hidden"
+        >
+          <div className="absolute -right-4 -bottom-4 text-primary/5 group-hover:text-primary/10 transition-colors">
+            <ShoppingBag size={120} strokeWidth={1} />
+          </div>
+          <div className="relative z-10">
+            <h2 className="text-2xl font-bold font-heading text-text-primary group-hover:text-primary transition-colors flex items-center gap-2">
+              Manage Orders
+              <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </h2>
+            <p className="text-text-muted mt-3 text-sm leading-relaxed max-w-md">
+              Orchestrate your kitchen flow. Real-time order tracking from preparation to final delivery. Keep customers updated every step of the way.
+            </p>
+            <div className="mt-6 flex gap-2">
+              <span className="text-[10px] bg-success/10 text-success px-2 py-1 rounded-md font-bold uppercase tracking-tighter">Live Traffic</span>
+              <span className="text-[10px] bg-background text-text-muted px-2 py-1 rounded-md font-bold uppercase tracking-tighter border border-border">Order Fulfilment</span>
+            </div>
+          </div>
         </Link>
       </div>
     </div>

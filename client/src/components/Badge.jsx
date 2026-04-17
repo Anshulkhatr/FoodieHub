@@ -2,19 +2,22 @@ import React from 'react';
 
 const Badge = ({ status }) => {
   const statusStyles = {
-    Pending: 'bg-amber-50 text-amber-700 border-amber-200',
-    Preparing: 'bg-blue-50 text-blue-700 border-blue-200',
-    Ready: 'bg-green-50 text-green-700 border-green-200',
-    'Out for Delivery': 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    Delivered: 'bg-gray-100 text-gray-500 border-gray-200',
+    Pending: 'bg-amber-100 text-amber-700 border-amber-200',
+    Preparing: 'bg-primary/10 text-primary border-primary/20 animate-pulse',
+    Ready: 'bg-green-100 text-green-700 border-green-200',
+    'Out for Delivery': 'bg-indigo-100 text-indigo-700 border-indigo-200',
+    Delivered: 'bg-text-muted/10 text-text-muted border-border',
   };
 
   const style = statusStyles[status] || statusStyles.Pending;
 
   return (
-    <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full border ${style}`}>
-      {status}
-    </span>
+    <div className="flex items-center gap-2">
+      <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-tighter rounded-full border shadow-sm ${style}`}>
+        {status === 'Preparing' && <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mr-1 animate-ping"></span>}
+        {status}
+      </span>
+    </div>
   );
 };
 
