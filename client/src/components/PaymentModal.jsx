@@ -122,8 +122,10 @@ const PaymentModal = ({ isOpen, onClose, total, onConfirm }) => {
       {/* Backdrop */}
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[80]" onClick={onClose} />
 
-      {/* Modal */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-[500px] max-h-[90vh] bg-white rounded-[2rem] z-[90] shadow-2xl overflow-y-auto custom-scrollbar animate-fade-in-up">
+      {/* Modal Wrapper for Perfect Centering */}
+      <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 pointer-events-none">
+        {/* Modal */}
+        <div className="w-full max-w-[500px] max-h-[100%] sm:max-h-[90vh] bg-white rounded-[2rem] shadow-2xl overflow-y-auto custom-scrollbar animate-fade-in-up pointer-events-auto flex flex-col">
 
         {stage === 'processing' && (
           <ProcessingScreen method={methodLabel} total={total} onDone={handleProcessingDone} />
@@ -287,6 +289,7 @@ const PaymentModal = ({ isOpen, onClose, total, onConfirm }) => {
             </div>
           </>
         )}
+      </div>
       </div>
     </>
   );
