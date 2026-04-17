@@ -6,6 +6,7 @@ import Button from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
 import Spinner from '../../components/Spinner';
+import PaymentModal from '../../components/PaymentModal';
 
 const CartDrawer = ({ isOpen, onClose }) => {
   const { items } = useSelector(state => state.cart);
@@ -13,6 +14,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [showPayment, setShowPayment] = React.useState(false);
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
@@ -46,8 +48,25 @@ const CartDrawer = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleOpenPayment = () => {
+    if (!user) {
+      onClose();
+      navigate('/login');
+      return;
+    }
+    setShowPayment(true);
+  };
+
   return (
     <>
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={showPayment}
+        onClose={() => setShowPayment(false)}
+        total={total}
+        onConfirm={handleCheckout}
+      />
+
       {/* Backdrop */}
       <div 
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] transition-opacity duration-500 ease-in-out ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} 
@@ -174,7 +193,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
 
             <button 
               className="group relative w-full h-16 bg-text-primary text-white rounded-2xl overflow-hidden shadow-2xl transition-all hover:bg-black active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3"
-              onClick={handleCheckout}
+              onClick={handleOpenPayment}
               disabled={isSubmitting}
             >
                 {isSubmitting ? (
