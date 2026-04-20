@@ -179,14 +179,14 @@ const AdminMenuPage = () => {
               
               <div className="flex gap-2 p-1 bg-background rounded-2xl border border-border/50 transition-colors group-hover:border-primary/10">
                 <button 
-                  onClick={() => openEditModal(item)}
+                  onClick={(e) => { e.stopPropagation(); openEditModal(item); }}
                   className="flex-1 flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-primary hover:bg-white rounded-xl transition-all"
                 >
                   <Edit2 size={12} /> Edit
                 </button>
                 <div className="w-px h-4 self-center bg-border/50"></div>
                 <button 
-                  onClick={() => handleDelete(item._id)}
+                  onClick={(e) => { e.stopPropagation(); handleDelete(item._id); }}
                   className="flex-1 flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-red-500 hover:bg-white rounded-xl transition-all"
                 >
                   <Trash2 size={12} /> Delete
