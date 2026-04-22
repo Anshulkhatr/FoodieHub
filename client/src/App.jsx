@@ -15,6 +15,7 @@ import AdminRevenuePage from './pages/AdminRevenuePage';
 import MyOrdersPage from './pages/MyOrdersPage';
 import LandingPage from './pages/LandingPage';
 import MenuItemDetailPage from './pages/MenuItemDetailPage';
+import InfiniteSlider from './components/InfiniteSlider';
 
 const CATEGORY_META = {
   'All':          { emoji: '🍽️', label: 'All Items' },
@@ -91,6 +92,9 @@ const MenuPage = () => {
           Explore {menu.length}+ dishes crafted with passion, premium ingredients, and generations of culinary heritage.
         </p>
       </div>
+
+      {/* Recommended Spotlight Slider */}
+      <InfiniteSlider />
 
       {/* Search Bar */}
       <div className="max-w-xl mx-auto mb-8">
