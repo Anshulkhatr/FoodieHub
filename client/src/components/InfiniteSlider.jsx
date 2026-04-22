@@ -1,62 +1,72 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import axiosInstance from '../utils/axiosInstance';
-import { Flame, Star, ChevronRight } from 'lucide-react';
+import { Star, ChevronRight } from 'lucide-react';
 
-const InfiniteSlider = () => {
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+/**
+ * @param {Array} items - List of menu items to display
+ * @param {String} title - Row title
+ * @param {String} subtitle - Small text description
+ * @param {Boolean} reverse - Scroll direction
+ * @param {String} aspectRatio - CSS aspect-ratio (e.g., 'aspect-video' or 'aspect-square')
+ * @param {String} icon - React component for the section icon
+ * @param {String} speed - CSS duration (e.g., '40s' or '60s')
+ */
+const InfiniteSlider = ({ 
+  items = [], 
+  title = "Slider", 
+  subtitle = "Check these out", 
+  reverse = false,
+  aspectRatio = "aspect-video",
+  icon: IconComponent = null,
+  speed = "40s"
+}) => {
+  if (items.length === 0) return null;
 
-  useEffect(() => {
-    const fetchFeatured = async () => {
-      try {
-        const { data } = await axiosInstance.get('/menu');
-        // Select top items or items with originalPrice (deals)
-        const featured = data.slice(0, 10); 
-        setItems(featured);
-      } catch (error) {
-        console.error('Failed to fetch slider items:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchFeatured();
-  }, []);
-
-  if (isLoading || items.length === 0) return null;
-
-  // Double the items for seamless infinite scroll
-  const sliderItems = [...items, ...items];
+  // Always animate if we have items
+  const showAnimation = items.length > 0;
+  
+  // Calculate how many times to repeat items to ensure the loop is seamless for small lists
+  // We want at least 8 items for a smooth visual experience at the durations we use
+  const repeatCount = items.length === 0 ? 0 : Math.ceil(8 / items.length);
+  const sliderItems = Array(Math.max(2, repeatCount)).fill(items).flat();
 
   return (
-    <div className="relative w-full overflow-hidden py-12 mb-12 bg-gradient-to-b from-primary/5 to-transparent">
+    <div className="relative w-full overflow-hidden py-10 mb-10 bg-gradient-to-b from-primary/5 to-transparent">
       {/* Background decoration */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
       
-      <div className="max-w-7xl mx-auto px-4 mb-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-xl">
-             <Flame className="text-primary animate-pulse" size={20} />
-          </div>
+          {IconComponent && (
+            <div className="p-2 bg-primary/10 rounded-xl">
+               <IconComponent className="text-primary" size={18} />
+            </div>
+          )}
           <div>
-            <h2 className="text-xl font-heading font-black text-text-primary tracking-tight">Today's <span className="text-primary">Spotlight</span></h2>
-            <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest">Handpicked favorites just for you</p>
+            <h2 className="text-xl font-heading font-black text-text-primary tracking-tight">{title}</h2>
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest leading-none mt-1">{subtitle}</p>
           </div>
         </div>
-        <Link to="/menu" className="text-xs font-black uppercase tracking-widest text-primary hover:gap-2 flex items-center gap-1 transition-all">
-          Explore All <ChevronRight size={14} />
+        <Link 
+          to="/menu" 
+          className="relative z-50 pointer-events-auto text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary-dark hover:scale-105 flex items-center gap-2 transition-all active:scale-95"
+        >
+          Explore All <ChevronRight size={14} className="animate-pulse" />
         </Link>
       </div>
 
-      <div className="flex overflow-hidden group">
-        <div className="flex animate-infinite-scroll pause-on-hover gap-6 px-4">
+      <div className={`flex overflow-hidden group ${!showAnimation ? 'justify-center' : ''}`}>
+        <div 
+          className={`flex gap-6 px-4 ${showAnimation ? (reverse ? 'animate-infinite-scroll-reverse' : 'animate-infinite-scroll') : ''} pause-on-hover min-w-max`}
+          style={{ animationDuration: speed }}
+        >
           {sliderItems.map((item, index) => (
             <Link 
               key={`${item._id}-${index}`}
               to={`/menu/${item._id}`}
-              className="flex-shrink-0 w-64 md:w-80 group/card"
+              className={`flex-shrink-0 w-64 md:w-80 group/card`}
             >
-              <div className="relative h-48 md:h-56 rounded-[2rem] overflow-hidden shadow-lg transition-all duration-500 group-hover/card:shadow-2xl group-hover/card:-translate-y-2 border border-border/50">
+              <div className={`relative ${aspectRatio} rounded-[2rem] overflow-hidden shadow-lg transition-all duration-500 group-hover/card:shadow-2xl group-hover/card:-translate-y-2 border border-border/50`}>
                 {/* Image */}
                 <img 
                   src={item.image} 
@@ -103,8 +113,7 @@ const InfiniteSlider = () => {
           ))}
         </div>
       </div>
-
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
     </div>
   );
 };

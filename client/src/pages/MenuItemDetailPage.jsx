@@ -6,8 +6,9 @@ import { addItem } from '../features/cart/cartSlice';
 import Spinner from '../components/Spinner';
 import {
   ArrowLeft, ShoppingCart, Star, Tag, CheckCircle,
-  XCircle, ExternalLink, ChevronRight, Clock, Flame, Leaf
+  XCircle, ExternalLink, ChevronRight, Clock, Flame, Leaf, Star as LucideStar
 } from 'lucide-react';
+import InfiniteSlider from '../components/InfiniteSlider';
 
 /* ─── tiny helpers ─────────────────────────────────────── */
 const Badge = ({ children, color = 'default' }) => {
@@ -317,16 +318,15 @@ const MenuItemDetailPage = () => {
             </Link>
           </div>
 
-          {/* Horizontal scroll on mobile, wrapped grid on desktop */}
-          <div className="flex gap-4 overflow-x-auto pb-3 snap-x snap-mandatory
-                          scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent
-                          sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-            {related.map(r => (
-              <div key={r._id} className="snap-start">
-                <RelatedCard item={r} />
-              </div>
-            ))}
-          </div>
+          {/* Fully Animated Infinite Slider for Collections */}
+          <InfiniteSlider 
+            items={related}
+            title="More Gourmet Selections"
+            subtitle={`Explore more delicious options from ${item.category}`}
+            icon={LucideStar}
+            aspectRatio="aspect-square"
+            speed="40s"
+          />
         </div>
       )}
     </div>

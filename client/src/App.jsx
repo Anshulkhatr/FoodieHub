@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Flame } from 'lucide-react';
 import axiosInstance from './utils/axiosInstance';
 import Spinner from './components/Spinner';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -94,7 +95,14 @@ const MenuPage = () => {
       </div>
 
       {/* Recommended Spotlight Slider */}
-      <InfiniteSlider />
+      <div className="mt-8 mb-4">
+        <InfiniteSlider 
+          items={menu.filter(i => i.originalPrice).slice(0, 10)} 
+          title="Culinary Spotlight"
+          subtitle="Handpicked favorites with the best deals"
+          icon={Flame}
+        />
+      </div>
 
       {/* Search Bar */}
       <div className="max-w-xl mx-auto mb-8">

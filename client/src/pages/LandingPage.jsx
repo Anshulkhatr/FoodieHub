@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Star, ChevronRight, Clock, Shield, Truck, Flame, ArrowDown, ChefHat, Leaf } from 'lucide-react';
 import axiosInstance from '../utils/axiosInstance';
+import InfiniteSlider from '../components/InfiniteSlider';
+import CategoryMarquee from '../components/CategoryMarquee';
+import HeroSlider from '../components/HeroSlider';
 
 /* ── Floating food emoji particles ── */
 const PARTICLES = ['🍕','🍔','🌮','🍜','🍣','🥗','🍰','🥩','🍤','🧁'];
 
 const FloatingParticle = ({ emoji, style }) => (
-  <span className="absolute select-none pointer-events-none animate-float text-3xl opacity-20" style={style}>
+  <span className="absolute select-none pointer-events-none animate-drift text-3xl opacity-20" style={style}>
     {emoji}
   </span>
 );
@@ -153,30 +156,46 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Hero image */}
+          {/* Hero image slider */}
           <div className="relative flex justify-center animate-fade-in-right">
-            <div className="relative w-full max-w-lg">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-200 to-amber-100 rounded-[2.5rem] rotate-3 scale-105 opacity-50 blur-sm" />
-              <img
-                src="/hero_food.png"
-                alt="Gourmet Food"
-                className="relative rounded-[2.5rem] shadow-2xl w-full object-cover aspect-square"
-                onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
-              />
-              <div className="hidden rounded-[2.5rem] shadow-2xl w-full aspect-square bg-gradient-to-br from-orange-100 to-amber-100 items-center justify-center text-9xl">🍽️</div>
-              {/* Floating chips */}
-              <div className="absolute -top-4 -left-6 bg-white shadow-xl rounded-2xl px-4 py-3 flex items-center gap-2 animate-float">
-                <ChefHat size={20} className="text-orange-400" />
-                <span className="font-bold text-sm text-gray-700">Fresh Today</span>
-              </div>
-              <div className="absolute -bottom-4 -right-6 bg-white shadow-xl rounded-2xl px-4 py-3 flex items-center gap-2 animate-float" style={{ animationDelay: '1.5s' }}>
-                <Clock size={18} className="text-amber-400" />
-                <span className="font-bold text-sm text-gray-700">30 min delivery</span>
-              </div>
-            </div>
+            <HeroSlider items={menu.slice(0, 5)} />
           </div>
         </div>
       </section>
+
+      {/* High-Energy Category Marquee */}
+      <CategoryMarquee />
+
+      {/* ───── MULTIPLE SPOTLIGHT SLIDERS ───── */}
+      <div className="mt-12 space-y-4 relative z-20">
+        <InfiniteSlider 
+          items={menu.filter(i => ['North Indian', 'South Indian', 'Biryani'].includes(i.category)).reverse().slice(0, 10)}
+          title="Traditional Dinner"
+          subtitle="Authentic flavors from across India"
+          icon={ChefHat}
+          speed="60s"
+          aspectRatio="aspect-video"
+        />
+        
+        <InfiniteSlider 
+          items={menu.filter(i => ['Pizzas', 'Fast Food', 'Chinese'].includes(i.category)).slice(0, 10)}
+          title="Quick Evening Bites"
+          subtitle="Rapid service, massive flavor"
+          icon={Flame}
+          reverse={true}
+          speed="50s"
+          aspectRatio="aspect-square"
+        />
+
+        <InfiniteSlider 
+          items={menu.filter(i => ['Desserts', 'Cakes', 'Beverages'].includes(i.category)).reverse().slice(0, 10)}
+          title="After-Dinner Treats"
+          subtitle="The perfect sweet finale"
+          icon={Star}
+          speed="45s"
+          aspectRatio="aspect-[4/3]"
+        />
+      </div>
 
       {/* ───── HOW IT WORKS ───── */}
       <section id="features" className="py-24 bg-white">
@@ -207,29 +226,23 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ───── FEATURED MENU ───── */}
-      {featured.length > 0 && (
-        <section id="menu" className="py-24 bg-gradient-to-br from-orange-50 to-amber-50">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
-              <div>
-                <div className="inline-flex items-center gap-2 bg-white text-orange-500 px-4 py-2 rounded-full text-sm font-semibold shadow mb-4">
-                  <Flame size={14} />
-                  Trending Now
-                </div>
-                <h2 className="text-4xl lg:text-5xl font-heading font-extrabold text-gray-900">Featured Dishes</h2>
-              </div>
-              <Link to="/menu" className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-600 font-bold transition-colors group">
-                View Full Menu
-                <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              {featured.map(item => <FeaturedCard key={item._id} item={item} user={user} />)}
-            </div>
-          </div>
-        </section>
-      )}
+    {/* ───── FEATURED MENU slider ───── */}
+    {featured.length > 0 && (
+      <section id="menu" className="py-12 bg-gradient-to-br from-orange-50 to-amber-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-10 text-center">
+          <h2 className="text-4xl lg:text-5xl font-heading font-extrabold text-gray-900">Chef's Gourmet Picks</h2>
+        </div>
+        
+        <InfiniteSlider 
+          items={featured} 
+          title="Handpicked Featured Gallery"
+          subtitle="A handpicked selection of our most celebrated dishes"
+          icon={Star}
+          aspectRatio="aspect-[4/3]"
+          speed="50s"
+        />
+      </section>
+    )}
 
       {/* ───── 2-COLUMN VISUAL FEATURE SECTION ───── */}
       <section className="py-24 bg-white">
@@ -315,25 +328,29 @@ const LandingPage = () => {
             </div>
             <h2 className="text-4xl lg:text-5xl font-heading font-extrabold">What Our Customers Say</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { name: 'Priya S.', review: 'Absolutely amazing food! The pasta was perfectly cooked and arrived still hot. Will definitely order again!', rating: 5 },
-              { name: 'Rahul M.', review: 'Best burgers in the city, hands down. The quality is consistently excellent and delivery is super fast.', rating: 5 },
-              { name: 'Anjali K.', review: 'Finally a food app that delivers what they promise. Fresh, delicious and on time. FoodieHub is my go-to!', rating: 5 },
-            ].map((t, i) => (
-              <div key={i} className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/10 hover:bg-white/15 transition-colors duration-300">
-                <div className="flex gap-1 mb-4">
-                  {Array(t.rating).fill(0).map((_, s) => <Star key={s} size={16} fill="#f97316" stroke="none" />)}
-                </div>
-                <p className="text-gray-200 leading-relaxed mb-6">"{t.review}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center font-bold text-white">
-                    {t.name[0]}
+          <div className="flex overflow-hidden group">
+            <div className="flex animate-infinite-scroll pause-on-hover gap-8 py-4 min-w-max">
+              {[...Array(2)].flatMap(() => [
+                { name: 'Priya S.', review: 'Absolutely amazing food! The pasta was perfectly cooked and arrived still hot. Will definitely order again!', rating: 5 },
+                { name: 'Rahul M.', review: 'Best burgers in the city, hands down. The quality is consistently excellent and delivery is super fast.', rating: 5 },
+                { name: 'Anjali K.', review: 'Finally a food app that delivers what they promise. Fresh, delicious and on time. FoodieHub is my go-to!', rating: 5 },
+                { name: 'Vikram R.', review: 'The biryani here is authentic and brings back memories of home. Excellent service!', rating: 5 },
+                { name: 'Sneha P.', review: 'Quick delivery and the packaging was spill-proof. Very impressed with the attention to detail.', rating: 4 },
+              ]).map((t, i) => (
+                <div key={i} className="flex-shrink-0 w-[350px] bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/10 hover:bg-white/15 transition-all duration-300 transform hover:scale-105">
+                  <div className="flex gap-1 mb-4">
+                    {Array(t.rating).fill(0).map((_, s) => <Star key={s} size={16} fill="#f97316" stroke="none" />)}
                   </div>
-                  <div className="font-semibold">{t.name}</div>
+                  <p className="text-gray-200 leading-relaxed mb-6 italic">"{t.review}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center font-bold text-white shadow-lg">
+                      {t.name[0]}
+                    </div>
+                    <div className="font-semibold text-white">{t.name}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
