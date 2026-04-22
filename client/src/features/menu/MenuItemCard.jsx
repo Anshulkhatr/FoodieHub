@@ -51,8 +51,18 @@ const MenuItemCard = ({ item }) => {
             </div>
           </>
         )}
-        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg shadow-sm z-10">
-          <span className="font-heading font-bold text-primary">₹{(item.price || 0).toFixed(2)}</span>
+        <div className="absolute top-3 right-3 flex flex-col items-end gap-1 z-10">
+          {item.originalPrice > item.price && (
+            <div className="bg-primary text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg shadow-primary/20 animate-fade-in flex items-center gap-1">
+              <span className="animate-pulse">🏷️</span> {Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}% OFF
+            </div>
+          )}
+          <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-sm border border-border/50 flex flex-col items-end">
+            <span className="font-heading font-bold text-primary leading-none">₹{(item.price || 0).toFixed(2)}</span>
+            {item.originalPrice > item.price && (
+              <span className="text-[10px] text-text-muted line-through opacity-70">₹{item.originalPrice.toFixed(2)}</span>
+            )}
+          </div>
         </div>
       </Link>
 

@@ -43,8 +43,15 @@ const RelatedCard = ({ item }) => {
           alt={item.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
-        <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-lg">
-          ₹{(item.price || 0).toFixed(0)}
+        <div className="absolute bottom-2 right-2 flex flex-col items-end gap-1">
+          {item.originalPrice > item.price && (
+            <div className="bg-primary text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-lg">
+              {Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}% OFF
+            </div>
+          )}
+          <div className="bg-black/70 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-lg">
+            ₹{(item.price || 0).toFixed(0)}
+          </div>
         </div>
       </div>
       <div className="p-3">
@@ -161,9 +168,15 @@ const MenuItemDetailPage = () => {
               group-hover:scale-105 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
           />
           {/* price badge */}
-          <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white
-                          font-heading font-bold text-xl px-4 py-2 rounded-2xl shadow-lg">
-            ₹{(item.price || 0).toFixed(2)}
+          <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+            {item.originalPrice > item.price && (
+              <div className="bg-primary text-white font-black text-sm px-3 py-1.5 rounded-2xl shadow-xl shadow-primary/30 animate-bounce-slow">
+                {Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}% DISCOUNT
+              </div>
+            )}
+            <div className="bg-black/60 backdrop-blur-md text-white font-heading font-bold text-xl px-4 py-2 rounded-2xl shadow-lg border border-white/10">
+              ₹{(item.price || 0).toFixed(2)}
+            </div>
           </div>
           {/* availability */}
           <div className="absolute top-4 left-4">
@@ -206,8 +219,18 @@ const MenuItemDetailPage = () => {
           <div>
             <div className="flex items-end justify-between mb-6">
               <div>
-                <p className="text-text-muted text-sm mb-1">Price per item</p>
-                <p className="text-5xl font-heading font-black text-primary">₹{(item.price || 0).toFixed(2)}</p>
+                <p className="text-text-muted text-sm mb-1">Current Savour Price</p>
+                <div className="flex items-center gap-3">
+                  <p className="text-5xl font-heading font-black text-primary">₹{(item.price || 0).toFixed(2)}</p>
+                  {item.originalPrice > item.price && (
+                    <div className="flex flex-col">
+                      <span className="text-lg text-text-muted line-through decoration-primary/30">₹{item.originalPrice.toFixed(2)}</span>
+                      <span className="text-[10px] font-black text-success uppercase tracking-widest bg-success/10 px-2 py-0.5 rounded-full border border-success/20 mt-1">
+                        Save ₹{(item.originalPrice - item.price).toFixed(0)}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
               {/* Qty stepper */}
               <div className="flex items-center gap-3 bg-surface border border-border rounded-2xl px-4 py-2">

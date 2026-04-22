@@ -16,6 +16,7 @@ const AdminMenuPage = () => {
     name: '',
     desc: '',
     price: '',
+    originalPrice: '',
     category: '',
     image: '',
     externalLink: '',
@@ -72,6 +73,7 @@ const AdminMenuPage = () => {
       name: '',
       desc: '',
       price: '',
+      originalPrice: '',
       category: '',
       image: '',
       externalLink: '',
@@ -87,6 +89,7 @@ const AdminMenuPage = () => {
       name: item.name,
       desc: item.desc,
       price: item.price,
+      originalPrice: item.originalPrice || '',
       category: item.category,
       image: item.image,
       externalLink: item.externalLink || '',
@@ -100,7 +103,8 @@ const AdminMenuPage = () => {
     setIsSaving(true);
     const submissionData = {
       ...formData,
-      price: Number(formData.price)
+      price: Number(formData.price),
+      originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined
     };
     
     try {
@@ -165,13 +169,23 @@ const AdminMenuPage = () => {
                    <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter text-text-primary shadow-sm border border-border/50">
                         {item.category}
                    </div>
+                   {item.originalPrice > item.price && (
+                     <div className="bg-primary px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter text-white shadow-sm border border-primary/20 animate-pulse">
+                        {Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}% OFF
+                     </div>
+                   )}
               </div>
             </div>
             
             <div className="p-5 flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1">{item.name}</h3>
-                <span className="font-heading font-black text-primary whitespace-nowrap ml-2">₹{item.price?.toFixed(2)}</span>
+                <div className="flex flex-col items-end">
+                  <span className="font-heading font-black text-primary whitespace-nowrap ml-2">₹{item.price?.toFixed(2)}</span>
+                  {item.originalPrice > item.price && (
+                    <span className="text-[10px] text-text-muted line-through">₹{item.originalPrice.toFixed(2)}</span>
+                  )}
+                </div>
               </div>
               <p className="text-xs text-text-muted line-clamp-2 mb-6 leading-relaxed flex-1">
                 {item.desc || 'No description provided for this culinary masterpiece.'}
@@ -230,7 +244,15 @@ const AdminMenuPage = () => {
                     <input 
                         type="number" name="price" step="0.01" required value={formData.price} onChange={handleInputChange}
                         className="w-full p-4 bg-background border border-border rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all font-bold text-primary"
-                        placeholder="0.00"
+                        placeholder="Current Price"
+                    />
+                </div>
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-text-muted uppercase tracking-widest px-1">Original Price (₹) - Optional</label>
+                    <input 
+                        type="number" name="originalPrice" step="0.01" value={formData.originalPrice} onChange={handleInputChange}
+                        className="w-full p-4 bg-background border border-border rounded-2xl focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all font-medium text-text-muted italic"
+                        placeholder="Price before discount"
                     />
                 </div>
                 <div className="space-y-1.5">
