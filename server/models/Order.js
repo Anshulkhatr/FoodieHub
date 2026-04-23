@@ -15,6 +15,12 @@ const orderSchema = new mongoose.Schema({
     enum: ['Pending', 'Preparing', 'Ready', 'Out for Delivery', 'Delivered'],
     default: 'Pending',
   },
+  statusHistory: [
+    {
+      status: { type: String },
+      timestamp: { type: Date, default: Date.now }
+    }
+  ],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

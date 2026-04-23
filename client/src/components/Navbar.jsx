@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { ShoppingCart, User as UserIcon, LogOut, Search, X, Menu as MenuIcon, ChevronDown, Package, LayoutDashboard } from 'lucide-react';
+import { ShoppingCart, User as UserIcon, LogOut, Search, X, Menu as MenuIcon, ChevronDown, Package, LayoutDashboard, Sparkles } from 'lucide-react';
 import { logout } from '../features/auth/authSlice';
 import axiosInstance from '../utils/axiosInstance';
 import Button from './Button';
@@ -63,7 +63,7 @@ const NavSearchBar = ({ isMobile }) => {
   };
 
   return (
-    <div ref={wrapperRef} className={`relative ${isMobile ? 'w-full mb-4 px-2' : 'hidden md:block w-72 lg:w-96'}`}>
+    <div ref={wrapperRef} className={`relative ${isMobile ? 'w-full mb-4 px-2' : 'hidden md:block w-full'}`}>
       <div className={`flex items-center gap-3 bg-background border rounded-2xl px-4 py-2.5 w-full
                         transition-all duration-500 ${open ? 'border-primary ring-4 ring-primary/5 shadow-xl shadow-primary/5' : 'border-border'}`}>
         <Search size={16} className={`flex-shrink-0 transition-colors duration-500 ${open ? 'text-primary' : 'text-text-muted/60'}`} />
@@ -160,7 +160,7 @@ const Navbar = ({ toggleCart }) => {
     }`}>
       <div className="max-w-[1600px] mx-auto flex items-center justify-between px-6 sm:px-8 lg:px-12 w-full gap-4">
         {/* Left Section: Logo & Search */}
-        <div className="flex items-center gap-10 flex-1 min-w-0">
+        <div className="flex items-center gap-5 min-w-0">
           <Link to="/" className="group flex items-center gap-2 flex-shrink-0">
             <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-primary/20 group-hover:rotate-12 transition-transform duration-500">
                 <Utensils size={20} />
@@ -171,15 +171,20 @@ const Navbar = ({ toggleCart }) => {
           </Link>
 
           {/* Search — Desktop */}
-          <div className="hidden lg:flex flex-1 max-w-xl">
+          <div className="hidden md:flex w-48 lg:w-64">
             {user && <NavSearchBar isMobile={false} />}
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-3 sm:gap-6">
-          <div className="hidden md:flex items-center gap-8">
+        <div className="flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-6">
             <Link to="/menu" className={`text-xs font-black uppercase tracking-widest transition-all ${location.pathname === '/menu' ? 'text-primary' : 'text-text-muted hover:text-text-primary'}`}>Collection</Link>
+            {user && (
+                <Link to="/rewards" className={`text-xs font-black uppercase tracking-widest transition-all ${location.pathname === '/rewards' ? 'text-primary' : 'text-text-muted hover:text-text-primary'} flex items-center gap-1.5`}>
+                    <Sparkles size={12} className="text-primary animate-pulse" /> Rewards
+                </Link>
+            )}
             {user && (
                 <Link to="/orders/mine" className={`text-xs font-black uppercase tracking-widest transition-all ${location.pathname === '/orders/mine' ? 'text-primary' : 'text-text-muted hover:text-text-primary'}`}>History</Link>
             )}
@@ -211,13 +216,19 @@ const Navbar = ({ toggleCart }) => {
                       <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/10 to-orange-400/10 flex items-center justify-center font-black text-primary text-xs uppercase border border-primary/20">
                           {user.name?.[0] || 'U'}
                       </div>
-                      <div className="max-w-[100px] truncate hidden md:block">
-                          <p className="text-[10px] font-black uppercase tracking-tighter text-text-primary leading-none">{user.name}</p>
+                      <div className="max-w-[120px] truncate hidden md:block">
+                          <div className="flex items-center gap-1.5">
+                              <p className="text-[10px] font-black uppercase tracking-tighter text-text-primary leading-none">{user.name}</p>
+                              <div className="bg-primary/10 px-1.5 py-0.5 rounded-lg border border-primary/20 flex items-center gap-1">
+                                  <Sparkles size={8} className="text-primary" />
+                                  <span className="text-[8px] font-black text-primary">{user.loyaltyPoints || 0}</span>
+                              </div>
+                          </div>
                           <p className="text-[8px] font-bold text-text-muted leading-tight mt-0.5 truncate capitalize">{user.role}</p>
                       </div>
                       <button 
                         onClick={handleLogout}
-                        className="p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                        className="p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-all ml-1"
                         title="Sign Out"
                       >
                           <LogOut size={16} />
@@ -252,6 +263,14 @@ const Navbar = ({ toggleCart }) => {
                     <span className="text-sm font-black uppercase tracking-widest text-text-primary">Our Collection</span>
                     <Package size={18} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
+                {user && (
+                    <Link to="/rewards" className="flex items-center justify-between group">
+                        <span className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                            <Sparkles size={16} /> FoodieRewards
+                        </span>
+                        <ChevronDown size={18} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity -rotate-90" />
+                    </Link>
+                )}
                 {user && (
                     <Link to="/orders/mine" className="flex items-center justify-between group">
                         <span className="text-sm font-black uppercase tracking-widest text-text-primary">My History</span>

@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const User = require('../models/User');
 
 const createOrder = async (req, res) => {
   const { items, totalPrice } = req.body;
@@ -11,9 +12,19 @@ const createOrder = async (req, res) => {
       user: req.user._id, 
       items, 
       totalPrice,
-      status: 'Preparing' // Force initial status to Preparing
+      status: 'Preparing',
+      statusHistory: [{ status: 'Preparing' }]
     });
+    
     const createdOrder = await order.save();
+
+    // Award Loyalty Points: 10 points per 1 unit of currency (e.g. ₹1)
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.loyaltyPoints += Math.floor(Number(totalPrice || 0) * 10);
+      await user.save();
+    }
+
     res.status(201).json(createdOrder);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -34,14 +45,15 @@ const getMyOrders = async (req, res) => {
         if (order.status === 'Preparing' && ageInMinutes >= 8) {
           newStatus = 'Ready';
         } else if (order.status === 'Ready' && ageInMinutes >= 12) {
-          // Move to Out for Delivery after 12 mins total (8m prep + 4m ready)
           newStatus = 'Out for Delivery';
         }
 
-        if (newStatus) {
-          const freshOrder = await Order.findByIdAndUpdate(order._id, { status: newStatus }, { new: true })
-            .populate('items.menuItem');
-          return freshOrder;
+        if (newStatus && order.status !== newStatus) {
+           const freshOrder = await Order.findById(order._id);
+           freshOrder.status = newStatus;
+           freshOrder.statusHistory.push({ status: newStatus });
+           await freshOrder.save();
+           return await Order.findById(order._id).populate('items.menuItem');
         }
       } catch (err) {
         console.error(`Auto-transition failed for order ${order._id}:`, err);
@@ -73,11 +85,12 @@ const getAllOrders = async (req, res) => {
           newStatus = 'Out for Delivery';
         }
 
-        if (newStatus) {
-          const freshOrder = await Order.findByIdAndUpdate(order._id, { status: newStatus }, { new: true })
-            .populate('user', 'id name')
-            .populate('items.menuItem');
-          return freshOrder;
+        if (newStatus && order.status !== newStatus) {
+           const freshOrder = await Order.findById(order._id);
+           freshOrder.status = newStatus;
+           freshOrder.statusHistory.push({ status: newStatus });
+           await freshOrder.save();
+           return await Order.findById(order._id).populate('user', 'id name').populate('items.menuItem');
         }
       } catch (err) {
         console.error(`Auto-transition failed for order ${order._id}:`, err);
@@ -111,7 +124,11 @@ const updateStatus = async (req, res) => {
       }
     }
 
-    order.status = req.body.status || order.status;
+    if (req.body.status && req.body.status !== order.status) {
+        order.status = req.body.status;
+        order.statusHistory.push({ status: req.body.status });
+    }
+    
     const updatedOrder = await order.save();
     res.json(updatedOrder);
   } catch (error) {

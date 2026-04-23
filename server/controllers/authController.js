@@ -15,6 +15,7 @@ const registerUser = async (req, res) => {
     if (user) {
       res.status(201).json({
         _id: user._id, name: user.name, email: user.email, role: user.role,
+        loyaltyPoints: user.loyaltyPoints,
         token: generateToken(user._id)
       });
     } else {
@@ -32,6 +33,7 @@ const loginUser = async (req, res) => {
     if (user && (await user.matchPassword(password))) {
       res.json({
         _id: user._id, name: user.name, email: user.email, role: user.role,
+        loyaltyPoints: user.loyaltyPoints,
         token: generateToken(user._id)
       });
     } else {
@@ -42,4 +44,23 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        loyaltyPoints: user.loyaltyPoints
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUserProfile };

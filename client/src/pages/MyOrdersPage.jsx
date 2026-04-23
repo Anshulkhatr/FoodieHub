@@ -4,7 +4,8 @@ import Spinner from '../components/Spinner';
 import Badge from '../components/Badge';
 
 import DeliveryPrompt from '../components/DeliveryPrompt';
-import { Sparkles, History } from 'lucide-react';
+import OrderTracker from '../components/OrderTracker';
+import { Sparkles, History, ShoppingBag } from 'lucide-react';
 import Button from '../components/Button';
 
 const MyOrdersPage = () => {
@@ -110,6 +111,8 @@ const MyOrdersPage = () => {
                       <Badge status={order.status} />
                     </div>
                   </div>
+                  
+                  <OrderTracker status={order.status} statusHistory={order.statusHistory} />
                   
                   {aiStatuses[order._id] && (
                     <div className="bg-background/50 border-l-2 border-primary p-3 mb-4 rounded-r-lg text-sm italic text-text-muted animate-in slide-in-from-left-2 duration-300">

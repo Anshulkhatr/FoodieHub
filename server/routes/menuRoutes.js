@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { getMenu, getMenuItemById, getAllMenuAdmin, addItem, updateItem, deleteItem } = require('../controllers/menuController');
+const { getMenu, getMenuItemById, getAllMenuAdmin, addItem, updateItem, deleteItem, getRecommendations } = require('../controllers/menuController');
 const { protect } = require('../middleware/authMiddleware');
 const { admin } = require('../middleware/adminMiddleware');
+
+router.get('/recommendations', protect, getRecommendations);
 
 router.route('/')
   .get(getMenu)

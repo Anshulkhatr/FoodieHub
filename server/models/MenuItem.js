@@ -9,6 +9,8 @@ const menuItemSchema = new mongoose.Schema({
   image: { type: String, required: true },
   externalLink: { type: String, default: '' },
   isAvailable: { type: Boolean, default: true },
+  tags: [{ type: String }],
+  popularityScore: { type: Number, default: 0 },
 }, { timestamps: true });
 
 module.exports = mongoose.model('MenuItem', menuItemSchema);

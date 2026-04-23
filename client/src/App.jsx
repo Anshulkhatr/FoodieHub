@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flame } from 'lucide-react';
+import { Flame, Leaf } from 'lucide-react';
 import axiosInstance from './utils/axiosInstance';
 import Spinner from './components/Spinner';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -14,6 +14,7 @@ import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminMenuPage from './pages/AdminMenuPage';
 import AdminRevenuePage from './pages/AdminRevenuePage';
 import MyOrdersPage from './pages/MyOrdersPage';
+import RewardsDashboard from './pages/RewardsDashboard';
 import LandingPage from './pages/LandingPage';
 import MenuItemDetailPage from './pages/MenuItemDetailPage';
 import InfiniteSlider from './components/InfiniteSlider';
@@ -43,6 +44,11 @@ const MenuPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
   const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({
+    isVeg: null,
+    priceRange: [0, 5000],
+    maxTime: 60
+  });
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -69,7 +75,10 @@ const MenuPage = () => {
     const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
     const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase()) ||
                           item.desc.toLowerCase().includes(search.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesVeg = filters.isVeg === null || item.isVeg === filters.isVeg;
+    const matchesPrice = item.price >= filters.priceRange[0] && item.price <= filters.priceRange[1];
+    
+    return matchesCategory && matchesSearch && matchesVeg && matchesPrice;
   });
 
   if (isLoading) return (
@@ -115,9 +124,44 @@ const MenuPage = () => {
             placeholder="Search any dish, ingredient or category…"
             className="w-full pl-11 pr-4 py-3.5 bg-surface border border-border rounded-2xl outline-none text-sm font-medium placeholder:text-text-muted/50 focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all shadow-sm"
           />
-          {search && (
-            <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors text-xs font-bold">✕</button>
-          )}
+        </div>
+      </div>
+
+      {/* Advanced Filters */}
+      <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+        <div className="flex bg-surface border border-border p-1 rounded-2xl shadow-sm">
+          <button 
+            onClick={() => setFilters(prev => ({ ...prev, isVeg: null }))}
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${filters.isVeg === null ? 'bg-text-primary text-white' : 'text-text-muted hover:text-text-primary'}`}
+          >
+            All
+          </button>
+          <button 
+            onClick={() => setFilters(prev => ({ ...prev, isVeg: true }))}
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 ${filters.isVeg === true ? 'bg-green-500 text-white' : 'text-text-muted hover:text-green-500'}`}
+          >
+            <Leaf size={12} /> Veg
+          </button>
+          <button 
+            onClick={() => setFilters(prev => ({ ...prev, isVeg: false }))}
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${filters.isVeg === false ? 'bg-red-500 text-white' : 'text-text-muted hover:text-red-500'}`}
+          >
+            Non-Veg
+          </button>
+        </div>
+
+        <div className="flex items-center gap-4 bg-surface border border-border px-4 py-2 rounded-2xl shadow-sm">
+          <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Price Under</span>
+          <select 
+            value={filters.priceRange[1]} 
+            onChange={(e) => setFilters(prev => ({ ...prev, priceRange: [0, Number(e.target.value)] }))}
+            className="bg-transparent text-xs font-bold text-primary outline-none cursor-pointer"
+          >
+            <option value="500">₹500</option>
+            <option value="1000">₹1,000</option>
+            <option value="2500">₹2,500</option>
+            <option value="5000">₹5,000</option>
+          </select>
         </div>
       </div>
 
@@ -222,6 +266,7 @@ function App() {
             <Route path="/login" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><LoginPage /></div>} />
             <Route path="/register" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><RegisterPage /></div>} />
             <Route path="/orders/mine" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute><MyOrdersPage /></ProtectedRoute></div>} />
+            <Route path="/rewards" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute><RewardsDashboard /></ProtectedRoute></div>} />
             <Route path="/admin/dashboard" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute></div>} />
             <Route path="/admin/orders" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminOrdersPage /></ProtectedRoute></div>} />
             <Route path="/admin/revenue" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminRevenuePage /></ProtectedRoute></div>} />

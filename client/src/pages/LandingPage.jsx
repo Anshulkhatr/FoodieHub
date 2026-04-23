@@ -6,6 +6,7 @@ import axiosInstance from '../utils/axiosInstance';
 import InfiniteSlider from '../components/InfiniteSlider';
 import CategoryMarquee from '../components/CategoryMarquee';
 import HeroSlider from '../components/HeroSlider';
+import Recommendations from '../components/Recommendations';
 
 /* ── Floating food emoji particles ── */
 const PARTICLES = ['🍕','🍔','🌮','🍜','🍣','🥗','🍰','🥩','🍤','🧁'];
@@ -165,6 +166,12 @@ const LandingPage = () => {
 
       {/* High-Energy Category Marquee */}
       <CategoryMarquee />
+
+      {user && (
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <Recommendations />
+        </div>
+      )}
 
       {/* ───── MULTIPLE SPOTLIGHT SLIDERS ───── */}
       <div className="mt-12 space-y-4 relative z-20">

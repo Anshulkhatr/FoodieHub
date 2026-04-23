@@ -1,4 +1,5 @@
 const MenuItem = require('../models/MenuItem');
+const Order = require('../models/Order');
 
 const getMenu = async (req, res) => {
   try {
@@ -63,4 +64,51 @@ const deleteItem = async (req, res) => {
   }
 };
 
-module.exports = { getMenu, getMenuItemById, getAllMenuAdmin, addItem, updateItem, deleteItem };
+const getRecommendations = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const pastOrders = await Order.find({ user: userId }).populate('items.menuItem');
+    
+    // Analyze favorite categories
+    const categoryCounts = {};
+    pastOrders.forEach(order => {
+      order.items.forEach(item => {
+        if (item.menuItem) {
+          const cat = item.menuItem.category;
+          categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+        }
+      });
+    });
+
+    // Get top categories
+    const topCategories = Object.keys(categoryCounts).sort((a, b) => categoryCounts[b] - categoryCounts[a]).slice(0, 2);
+
+    let recommendations;
+    if (topCategories.length > 0) {
+      // Recommend from top categories + top popularity
+      recommendations = await MenuItem.find({
+        category: { $in: topCategories },
+        isAvailable: true
+      }).sort({ popularityScore: -1 }).limit(10);
+    } else {
+      // No history, recommend by popularity
+      recommendations = await MenuItem.find({ isAvailable: true })
+        .sort({ popularityScore: -1 })
+        .limit(10);
+    }
+
+    res.json(recommendations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { 
+  getMenu, 
+  getMenuItemById, 
+  getAllMenuAdmin, 
+  addItem, 
+  updateItem, 
+  deleteItem,
+  getRecommendations 
+};
