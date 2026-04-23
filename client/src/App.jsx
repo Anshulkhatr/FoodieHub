@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flame, Leaf } from 'lucide-react';
+import { Flame, Leaf, ChevronDown } from 'lucide-react';
 import axiosInstance from './utils/axiosInstance';
 import Spinner from './components/Spinner';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -128,41 +128,65 @@ const MenuPage = () => {
       </div>
 
       {/* Advanced Filters */}
+      {/* Advanced Filters */}
       <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+        {/* Veg/Non-Veg Toggle */}
         <div className="flex bg-surface border border-border p-1 rounded-2xl shadow-sm">
           <button 
             onClick={() => setFilters(prev => ({ ...prev, isVeg: null }))}
-            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${filters.isVeg === null ? 'bg-text-primary text-white' : 'text-text-muted hover:text-text-primary'}`}
+            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${filters.isVeg === null ? 'bg-text-primary text-white shadow-md' : 'text-text-muted hover:text-text-primary'}`}
           >
             All
           </button>
           <button 
             onClick={() => setFilters(prev => ({ ...prev, isVeg: true }))}
-            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 ${filters.isVeg === true ? 'bg-green-500 text-white' : 'text-text-muted hover:text-green-500'}`}
+            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${filters.isVeg === true ? 'bg-green-600 text-white shadow-md' : 'text-text-muted hover:text-green-600'}`}
           >
-            <Leaf size={12} /> Veg
+            <div className={`w-2 h-2 rounded-full ${filters.isVeg === true ? 'bg-white' : 'bg-green-500'}`} />
+            Veg
           </button>
           <button 
             onClick={() => setFilters(prev => ({ ...prev, isVeg: false }))}
-            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${filters.isVeg === false ? 'bg-red-500 text-white' : 'text-text-muted hover:text-red-500'}`}
+            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${filters.isVeg === false ? 'bg-red-600 text-white shadow-md' : 'text-text-muted hover:text-red-600'}`}
           >
+            <div className={`w-2 h-2 rounded-full ${filters.isVeg === false ? 'bg-white' : 'bg-red-500'}`} />
             Non-Veg
           </button>
         </div>
 
-        <div className="flex items-center gap-4 bg-surface border border-border px-4 py-2 rounded-2xl shadow-sm">
+        {/* Price Dropdown */}
+        <div className="group relative flex items-center gap-3 bg-surface border border-border pl-5 pr-3 py-2 rounded-2xl shadow-sm hover:border-primary/50 transition-all">
           <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Price Under</span>
-          <select 
-            value={filters.priceRange[1]} 
-            onChange={(e) => setFilters(prev => ({ ...prev, priceRange: [0, Number(e.target.value)] }))}
-            className="bg-transparent text-xs font-bold text-primary outline-none cursor-pointer"
-          >
-            <option value="500">₹500</option>
-            <option value="1000">₹1,000</option>
-            <option value="2500">₹2,500</option>
-            <option value="5000">₹5,000</option>
-          </select>
+          <div className="relative">
+            <select 
+              value={filters.priceRange[1]} 
+              onChange={(e) => setFilters(prev => ({ ...prev, priceRange: [0, Number(e.target.value)] }))}
+              className="appearance-none bg-transparent pr-8 py-1 text-xs font-black text-primary outline-none cursor-pointer relative z-10"
+            >
+              <option value="500">₹500</option>
+              <option value="1000">₹1,000</option>
+              <option value="2500">₹2,500</option>
+              <option value="5000">₹5,000</option>
+            </select>
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-primary group-hover:translate-y-[-40%] transition-transform">
+                <ChevronDown size={14} strokeWidth={3} />
+            </div>
+          </div>
         </div>
+        
+        {/* Reset Filters */}
+        {(filters.isVeg !== null || filters.priceRange[1] < 5000 || search) && (
+            <button 
+                onClick={() => {
+                    setFilters({ isVeg: null, priceRange: [0, 5000], maxTime: 60 });
+                    setSearch('');
+                    setActiveCategory('All');
+                }}
+                className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline px-2"
+            >
+                Clear Filters
+            </button>
+        )}
       </div>
 
       {/* Category Nav Pills */}
@@ -222,10 +246,23 @@ const MenuPage = () => {
 
       {/* Results Grid */}
       {filteredMenu.length === 0 ? (
-        <div className="text-center py-20 bg-surface rounded-3xl border border-border animate-fade-in-up">
-          <div className="text-5xl mb-4">🥡</div>
-          <h3 className="text-xl font-bold text-text-primary mb-2">Nothing found</h3>
-          <p className="text-text-muted text-sm">Try a different category or search term.</p>
+        <div className="text-center py-20 bg-surface rounded-[2.5rem] border border-border animate-fade-in-up shadow-inner relative overflow-hidden">
+          <div className="absolute inset-0 bg-primary/5 animate-pulse" />
+          <div className="relative z-10">
+            <div className="text-6xl mb-6">🥡</div>
+            <h3 className="text-2xl font-heading font-black text-text-primary mb-2 tracking-tight">Nothing found</h3>
+            <p className="text-text-muted text-sm max-w-xs mx-auto mb-8 font-medium">We couldn't find any items matching your current filters. Try relaxing them!</p>
+            <button 
+                onClick={() => {
+                    setFilters({ isVeg: null, priceRange: [0, 5000], maxTime: 60 });
+                    setSearch('');
+                    setActiveCategory('All');
+                }}
+                className="px-8 py-3 bg-text-primary text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all transform active:scale-95 shadow-xl shadow-black/10"
+            >
+                Reset All Filters
+            </button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

@@ -51,6 +51,14 @@ const MenuItemCard = ({ item }) => {
             </div>
           </>
         )}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+          {/* Veg/Non-Veg Badge */}
+          <div className={`px-2 py-1 rounded-lg backdrop-blur-md border shadow-sm flex items-center gap-1.5 ${item.isVeg ? 'bg-green-500/10 border-green-500/20 text-green-600' : 'bg-red-500/10 border-red-500/20 text-red-600'}`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${item.isVeg ? 'bg-green-500' : 'bg-red-500'}`} />
+            <span className="text-[8px] font-black uppercase tracking-widest">{item.isVeg ? 'Veg' : 'Non-Veg'}</span>
+          </div>
+        </div>
+
         <div className="absolute top-3 right-3 flex flex-col items-end gap-1 z-10">
           {item.originalPrice > item.price && (
             <div className="bg-primary text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg shadow-primary/20 animate-fade-in flex items-center gap-1">
