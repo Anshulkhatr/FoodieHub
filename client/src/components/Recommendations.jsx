@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../utils/axiosInstance';
 import Spinner from './Spinner';
-import { Sparkles, ChevronRight, Star } from 'lucide-react';
+import { Sparkles, ChevronRight, Star, ShoppingCart } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../features/cart/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Recommendations = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -37,7 +42,10 @@ const Recommendations = () => {
             <p className="text-xs font-black text-text-muted uppercase tracking-widest">AI-Powered Gastronomy</p>
           </div>
         </div>
-        <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:gap-3 transition-all">
+        <button 
+          onClick={() => navigate('/menu')}
+          className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:gap-3 transition-all"
+        >
           Explore All <ChevronRight size={14} />
         </button>
       </div>
@@ -60,8 +68,14 @@ const Recommendations = () => {
                 </div>
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                 <button className="w-full py-2 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    Add to Cart
+                 <button 
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     dispatch(addItem({ menuItem: item._id, name: item.name, price: item.price, quantity: 1, image: item.image }));
+                   }}
+                   className="w-full py-2 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2"
+                 >
+                    <ShoppingCart size={12} /> Add to Cart
                  </button>
               </div>
             </div>

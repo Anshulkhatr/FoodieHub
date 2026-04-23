@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   items: JSON.parse(localStorage.getItem('cartItems')) || [],
+  appliedVoucher: null, // { code, title, type, value, category, discount }
 };
 
 const cartSlice = createSlice({
@@ -32,10 +33,14 @@ const cartSlice = createSlice({
     },
     clearCart: (state) => {
       state.items = [];
+      state.appliedVoucher = null;
       localStorage.removeItem('cartItems');
+    },
+    setVoucher: (state, action) => {
+      state.appliedVoucher = action.payload; // null to remove
     },
   },
 });
 
-export const { addItem, removeItem, updateQty, clearCart } = cartSlice.actions;
+export const { addItem, removeItem, updateQty, clearCart, setVoucher } = cartSlice.actions;
 export default cartSlice.reducer;

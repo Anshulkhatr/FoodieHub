@@ -3,11 +3,13 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { ShoppingCart, User as UserIcon, LogOut, Search, X, Menu as MenuIcon, ChevronDown, Package, LayoutDashboard, Sparkles } from 'lucide-react';
 import { logout } from '../features/auth/authSlice';
+import { clearCart } from '../features/cart/cartSlice';
 import axiosInstance from '../utils/axiosInstance';
 import Button from './Button';
 
 /* ─── Search Bar Component ───────────────────────────────── */
 const NavSearchBar = ({ isMobile }) => {
+// ... existing code ...
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -148,6 +150,7 @@ const Navbar = ({ toggleCart }) => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearCart());
     navigate('/');
     setMobileMenuOpen(false);
   };

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { X, Trash2, Minus, Plus, ShoppingBag, ArrowRight, ShoppingCart } from 'lucide-react';
-import { removeItem, updateQty, clearCart } from './cartSlice';
+import { X, Trash2, Minus, Plus, ShoppingBag, ArrowRight, ShoppingCart, Ticket, CheckCircle2 } from 'lucide-react';
+import { removeItem, updateQty, clearCart, setVoucher } from './cartSlice';
 import Button from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
@@ -9,14 +9,68 @@ import Spinner from '../../components/Spinner';
 import PaymentModal from '../../components/PaymentModal';
 
 const CartDrawer = ({ isOpen, onClose }) => {
-  const { items } = useSelector(state => state.cart);
+  const { items, appliedVoucher } = useSelector(state => state.cart);
   const { user } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [showPayment, setShowPayment] = React.useState(false);
+  const [voucherCode, setVoucherCode] = useState('');
+  const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
+  const [voucherError, setVoucherError] = useState('');
 
-  const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  
+  // Calculate discount
+  let discount = 0;
+  if (appliedVoucher) {
+    if (appliedVoucher.type === 'percentage') {
+      discount = Math.floor((subtotal * appliedVoucher.value) / 100);
+    } else if (appliedVoucher.type === 'free_item') {
+      // Find eligible items in the cart
+      const eligibleItems = items.filter(i => i.category === appliedVoucher.category);
+      if (eligibleItems.length > 0) {
+        // Free item is usually the cheapest one of that category
+        const cheapest = [...eligibleItems].sort((a, b) => a.price - b.price)[0];
+        discount = cheapest.price;
+      }
+    }
+  }
+
+  const total = Math.max(0, subtotal - discount);
+
+  const handleApplyVoucher = async () => {
+    if (!voucherCode.trim()) return;
+    setIsApplyingVoucher(true);
+    setVoucherError('');
+    try {
+      const { data } = await axiosInstance.post('/auth/apply-voucher', { 
+        code: voucherCode.toUpperCase(),
+        cartTotal: subtotal
+      });
+      
+      // Additional check for free_item category
+      if (data.type === 'free_item') {
+        const hasCategory = items.some(i => i.category === data.category);
+        if (!hasCategory) {
+          setVoucherError(`Add a ${data.category} item to use this voucher`);
+          setIsApplyingVoucher(false);
+          return;
+        }
+      }
+
+      dispatch(setVoucher(data));
+      setVoucherCode('');
+      setIsApplyingVoucher(false);
+    } catch (error) {
+      setVoucherError(error.response?.data?.message || 'Invalid voucher code');
+      setIsApplyingVoucher(false);
+    }
+  };
+
+  const handleRemoveVoucher = () => {
+    dispatch(setVoucher(null));
+  };
 
   const handleCheckout = async () => {
     if (!user) {
@@ -37,6 +91,12 @@ const CartDrawer = ({ isOpen, onClose }) => {
       };
       
       await axiosInstance.post('/orders', orderData);
+
+      // If voucher was used, mark it as used in DB
+      if (appliedVoucher) {
+        await axiosInstance.post('/auth/mark-voucher-used', { code: appliedVoucher.code });
+      }
+
       dispatch(clearCart());
       onClose();
       navigate('/orders/mine');
@@ -139,7 +199,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                                 </button>
                             </div>
                             <div className="flex items-center gap-1.5 mb-3">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-text-muted/60">Gourmet Selection</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-text-muted/60">{item.category}</span>
                             </div>
                             
                             <div className="flex items-center justify-between mt-auto">
@@ -167,14 +227,78 @@ const CartDrawer = ({ isOpen, onClose }) => {
           )}
         </div>
 
+        {/* Voucher Section */}
+        {items.length > 0 && user && (
+          <div className="px-6 py-4 bg-surface/30 border-t border-border/50">
+            {appliedVoucher ? (
+              <div className="flex items-center justify-between bg-primary/10 border border-primary/20 p-4 rounded-2xl animate-fade-in-up">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
+                    <Ticket size={20} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-primary/60">Applied Voucher</p>
+                    <h4 className="font-bold text-text-primary text-sm">{appliedVoucher.title} ({appliedVoucher.code})</h4>
+                  </div>
+                </div>
+                <button 
+                  onClick={handleRemoveVoucher}
+                  className="text-xs font-black uppercase tracking-widest text-primary hover:underline"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <Ticket size={14} className="text-primary" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-text-muted/60">Have a Voucher?</span>
+                </div>
+                <div className="flex gap-2">
+                  <div className="flex-1 relative">
+                    <input 
+                      type="text" 
+                      value={voucherCode}
+                      onChange={(e) => setVoucherCode(e.target.value)}
+                      placeholder="ENTER CODE"
+                      className="w-full bg-white border border-border/50 rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-widest focus:border-primary/50 focus:ring-0 transition-all"
+                    />
+                    {isApplyingVoucher && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        <Spinner size={16} />
+                      </div>
+                    )}
+                  </div>
+                  <button 
+                    onClick={handleApplyVoucher}
+                    disabled={!voucherCode.trim() || isApplyingVoucher}
+                    className="px-6 bg-text-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black disabled:opacity-50 transition-all"
+                  >
+                    Apply
+                  </button>
+                </div>
+                {voucherError && (
+                  <p className="text-[10px] font-bold text-red-500 uppercase tracking-tight">{voucherError}</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Footer */}
         {items.length > 0 && (
           <div className="p-8 border-t border-border/50 bg-surface/80 backdrop-blur-xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)] space-y-6">
             <div className="space-y-3">
                 <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-text-muted/60">
                     <span>Subtotal</span>
-                    <span>₹{total.toFixed(2)}</span>
+                    <span>₹{subtotal.toFixed(2)}</span>
                 </div>
+                {discount > 0 && (
+                  <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-success">
+                      <span>Voucher Discount</span>
+                      <span>-₹{discount.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-text-muted/60">
                     <span>Delivery</span>
                     <span className="text-success">Complimentary</span>
@@ -182,7 +306,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 <div className="h-px bg-border/50 my-2"></div>
                 <div className="flex justify-between items-end">
                     <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-text-muted/60 mb-1">Estimated Total</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-text-muted/60 mb-1">Final Total</p>
                         <span className="font-heading font-black text-text-primary text-3xl">₹{total.toFixed(2)}</span>
                     </div>
                     <div className="text-right">

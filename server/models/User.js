@@ -7,6 +7,15 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   loyaltyPoints: { type: Number, default: 0 },
+  vouchers: [{
+    code:    { type: String },
+    title:   { type: String },
+    type:    { type: String }, // 'percentage' | 'free_item'
+    value:   { type: Number }, // 15 for 15%, or 0 for free_item
+    category: { type: String }, // e.g. 'Desserts' for free_item
+    isUsed:  { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
+  }],
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {
