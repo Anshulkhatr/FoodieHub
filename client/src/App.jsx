@@ -12,6 +12,7 @@ import MenuItemCard from './features/menu/MenuItemCard';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminMenuPage from './pages/AdminMenuPage';
+import AdminEditMenuItemPage from './pages/AdminEditMenuItemPage';
 import AdminRevenuePage from './pages/AdminRevenuePage';
 import MyOrdersPage from './pages/MyOrdersPage';
 import RewardsDashboard from './pages/RewardsDashboard';
@@ -309,6 +310,8 @@ function App() {
             <Route path="/admin/orders" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminOrdersPage /></ProtectedRoute></div>} />
             <Route path="/admin/revenue" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminRevenuePage /></ProtectedRoute></div>} />
             <Route path="/admin/menu" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminMenuPage /></ProtectedRoute></div>} />
+            <Route path="/admin/menu/add" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminEditMenuItemPage /></ProtectedRoute></div>} />
+            <Route path="/admin/menu/edit/:id" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminEditMenuItemPage /></ProtectedRoute></div>} />
             <Route path="*" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><NotFoundPage /></div>} />
           </Routes>
         </main>
