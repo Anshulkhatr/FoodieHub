@@ -129,7 +129,7 @@ const NavSearchBar = ({ isMobile }) => {
 };
 
 /* ─── Navbar ─────────────────────────────────────────────── */
-const Navbar = ({ toggleCart }) => {
+const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
   const { items } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
@@ -204,7 +204,7 @@ const Navbar = ({ toggleCart }) => {
           <div className="flex items-center gap-3">
               {user && (
                 <button 
-                    onClick={toggleCart} 
+                    onClick={() => navigate('/cart')} 
                     className="relative p-2.5 text-text-primary hover:text-primary bg-background/50 hover:bg-white border border-border/50 hover:border-primary/20 rounded-2xl transition-all group active:scale-95 shadow-sm"
                 >
                   <ShoppingCart size={22} className="group-hover:rotate-3" />
