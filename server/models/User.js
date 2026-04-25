@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
     category: { type: String }, // e.g. 'Desserts' for free_item
     isUsed:  { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
+    expiresAt: { type: Date },
   }],
 }, { timestamps: true });
 

@@ -27,7 +27,9 @@ const CartPage = () => {
     if (appliedVoucher.type === 'percentage') {
       discount = Math.floor((subtotal * appliedVoucher.value) / 100);
     } else if (appliedVoucher.type === 'free_item') {
-      const eligibleItems = items.filter(i => i.category === appliedVoucher.category);
+      const eligibleItems = items.filter(i => 
+        i.category.toLowerCase().replace(/s$/, '') === appliedVoucher.category.toLowerCase().replace(/s$/, '')
+      );
       if (eligibleItems.length > 0) {
         const cheapest = [...eligibleItems].sort((a, b) => a.price - b.price)[0];
         discount = cheapest.price;
@@ -48,7 +50,9 @@ const CartPage = () => {
       });
       
       if (data.type === 'free_item') {
-        const hasCategory = items.some(i => i.category === data.category);
+        const hasCategory = items.some(i => 
+          i.category.toLowerCase().replace(/s$/, '') === data.category.toLowerCase().replace(/s$/, '')
+        );
         if (!hasCategory) {
           setVoucherError(`Add a ${data.category} item to use this voucher`);
           setIsApplyingVoucher(false);

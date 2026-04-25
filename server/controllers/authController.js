@@ -11,9 +11,9 @@ const generateVoucherCode = () => {
 };
 
 const COUPON_META = {
-  'Free Dessert':     { type: 'free_item',   value: 0,  category: 'Desserts' },
+  '25% Off Total':    { type: 'percentage',  value: 25, category: null },
   '15% Off Total':    { type: 'percentage',  value: 15, category: null },
-  'Free Main Course': { type: 'free_item',   value: 0,  category: 'Mains' },
+  '50% Off Total':    { type: 'percentage',  value: 50, category: null },
 };
 
 const registerUser = async (req, res) => {
@@ -59,13 +59,21 @@ const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if (user) {
+      // Filter out expired vouchers and mark used ones
+      const now = new Date();
+      const validVouchers = user.vouchers.filter(v => {
+        if (v.isUsed) return false;
+        if (v.expiresAt && v.expiresAt < now) return false;
+        return true;
+      });
+
       res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         loyaltyPoints: user.loyaltyPoints,
-        vouchers: user.vouchers,
+        vouchers: validVouchers,
       });
     } else {
       res.status(404).json({ message: 'User not found' });
@@ -88,15 +96,19 @@ const redeemPoints = async (req, res) => {
     if (!meta) return res.status(400).json({ message: 'Unknown coupon type' });
 
     const code = generateVoucherCode();
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 3);
+
     user.loyaltyPoints -= cost;
-    user.vouchers.push({ code, title, ...meta });
+    const newVoucher = { code, title, ...meta, expiresAt };
+    user.vouchers.push(newVoucher);
     await user.save();
 
     res.json({
       message: `Redeemed: ${title}`,
       loyaltyPoints: user.loyaltyPoints,
       voucherCode: code,
-      voucher: { code, title, ...meta, isUsed: false },
+      voucher: { ...newVoucher, isUsed: false },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -109,8 +121,13 @@ const applyVoucher = async (req, res) => {
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    const voucher = user.vouchers.find(v => v.code === code.toUpperCase() && !v.isUsed);
-    if (!voucher) return res.status(400).json({ message: 'Invalid or already used voucher code' });
+    const now = new Date();
+    const voucher = user.vouchers.find(v => 
+      v.code === code.toUpperCase() && 
+      !v.isUsed && 
+      (!v.expiresAt || v.expiresAt > now)
+    );
+    if (!voucher) return res.status(400).json({ message: 'Invalid, expired, or already used voucher code' });
 
     let discount = 0;
     if (voucher.type === 'percentage') {

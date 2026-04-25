@@ -6,9 +6,9 @@ import Spinner from '../components/Spinner';
 import { Sparkles, Gift, TrendingUp, Award, ChevronRight, CheckCircle, AlertCircle, Ticket, Copy } from 'lucide-react';
 
 const COUPONS = [
-  { title: 'Free Dessert',      cost: 1000, emoji: '🍰', color: 'bg-pink-500',   desc: 'Get any dessert item free on your next order.' },
+  { title: '25% Off Total',     cost: 1000, emoji: '🍰', color: 'bg-pink-500',   desc: 'Flat 25% discount on your total cart value.' },
   { title: '15% Off Total',     cost: 2500, emoji: '🏷️', color: 'bg-blue-500',   desc: 'Flat 15% discount on your total cart value.' },
-  { title: 'Free Main Course',  cost: 5000, emoji: '🍱', color: 'bg-orange-500', desc: 'Enjoy any main course item completely free.' },
+  { title: '50% Off Total',     cost: 5000, emoji: '🍱', color: 'bg-orange-500', desc: 'Flat 50% discount on your total cart value.' },
 ];
 
 const Toast = ({ msg, type, onClose }) => (
@@ -170,7 +170,9 @@ const RewardsDashboard = () => {
                     <Copy size={14} />
                   </button>
                 </div>
-                <p className="text-[8px] font-bold text-text-muted mt-3 uppercase tracking-widest">Use at checkout</p>
+                <p className="text-[8px] font-bold text-text-muted mt-3 uppercase tracking-widest">
+                  Expires: {v.expiresAt ? new Date(v.expiresAt).toLocaleDateString() : 'N/A'}
+                </p>
               </div>
             ))}
           </div>
