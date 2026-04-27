@@ -229,8 +229,16 @@ const Navbar = () => {
                           </div>
                           <p className="text-[8px] font-bold text-text-muted leading-tight mt-0.5 truncate capitalize">{user.role}</p>
                       </div>
+                      <Link 
+                        to="/profile"
+                        className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-xl transition-all ml-1"
+                        title="Your Profile"
+                      >
+                          <UserIcon size={16} />
+                      </Link>
                       <button 
                         onClick={handleLogout}
+
                         className="p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-all ml-1"
                         title="Sign Out"
                       >
@@ -298,9 +306,15 @@ const Navbar = () => {
                                 <p className="text-[10px] font-black uppercase text-text-muted">{user.role}</p>
                             </div>
                         </div>
-                        <button onClick={handleLogout} className="p-3 bg-red-50 text-red-500 rounded-2xl border border-red-100">
-                            <LogOut size={18} />
-                        </button>
+                        <div className="flex gap-2">
+                            <Link to="/profile" className="p-3 bg-primary/5 text-primary rounded-2xl border border-primary/10">
+                                <UserIcon size={18} />
+                            </Link>
+                            <button onClick={handleLogout} className="p-3 bg-red-50 text-red-500 rounded-2xl border border-red-100">
+                                <LogOut size={18} />
+                            </button>
+                        </div>
+
                    </div>
                 ) : (
                     <div className="grid grid-cols-2 gap-4">

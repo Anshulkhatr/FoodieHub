@@ -20,6 +20,9 @@ import LandingPage from './pages/LandingPage';
 import MenuItemDetailPage from './pages/MenuItemDetailPage';
 import InfiniteSlider from './components/InfiniteSlider';
 import CartPage from './pages/CartPage';
+import ProfilePage from './pages/ProfilePage';
+import AdminUsersPage from './pages/AdminUsersPage';
+
 
 const CATEGORY_META = {
   'All':          { emoji: '🍽️', label: 'All Items' },
@@ -312,6 +315,9 @@ function App() {
             <Route path="/admin/menu" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminMenuPage /></ProtectedRoute></div>} />
             <Route path="/admin/menu/add" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminEditMenuItemPage /></ProtectedRoute></div>} />
             <Route path="/admin/menu/edit/:id" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminEditMenuItemPage /></ProtectedRoute></div>} />
+            <Route path="/admin/users" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute adminOnly><AdminUsersPage /></ProtectedRoute></div>} />
+            <Route path="/profile" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><ProtectedRoute><ProfilePage /></ProtectedRoute></div>} />
+
             <Route path="*" element={<div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"><NotFoundPage /></div>} />
           </Routes>
         </main>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, Utensils, TrendingUp, ChevronRight, Activity } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Utensils, TrendingUp, ChevronRight, Activity, Users } from 'lucide-react';
+
 import axiosInstance from '../utils/axiosInstance';
 import Spinner from '../components/Spinner';
 
@@ -132,6 +133,42 @@ const AdminDashboard = () => {
           </div>
         </Link>
       </div>
+
+      {/* Secondary Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+        <Link 
+          to="/admin/users" 
+          className="group relative block p-6 bg-surface border border-border rounded-3xl shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300 overflow-hidden"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+              <Users size={24} />
+            </div>
+            <ChevronRight size={18} className="text-text-muted group-hover:translate-x-1 group-hover:text-primary transition-all" />
+          </div>
+          <h3 className="text-xl font-bold font-heading text-text-primary group-hover:text-primary transition-colors">Manage Users</h3>
+          <p className="text-text-muted mt-2 text-xs leading-relaxed">
+            Oversee the FoodieHub community. Monitor loyalty points, view profiles, and manage account access.
+          </p>
+        </Link>
+
+        <Link 
+          to="/admin/revenue" 
+          className="group relative block p-6 bg-surface border border-border rounded-3xl shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300 overflow-hidden"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 bg-success/10 rounded-2xl text-success group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+              <TrendingUp size={24} />
+            </div>
+            <ChevronRight size={18} className="text-text-muted group-hover:translate-x-1 group-hover:text-success transition-all" />
+          </div>
+          <h3 className="text-xl font-bold font-heading text-text-primary group-hover:text-success transition-colors">Financial Reports</h3>
+          <p className="text-text-muted mt-2 text-xs leading-relaxed">
+            Detailed breakdown of earnings, top-selling items, and seasonal growth trends across the platform.
+          </p>
+        </Link>
+      </div>
+
     </div>
   );
 };
